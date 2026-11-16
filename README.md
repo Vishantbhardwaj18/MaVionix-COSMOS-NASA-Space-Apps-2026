@@ -1,7 +1,6 @@
-<div align="center">
-
 # COSMOS: SPHEREx sky, over time
 
+<<<<<<< HEAD
 **MaVionix · NASA Space Apps Challenge 2026 · Sonipat · Challenge: "Planet X and SPHEREx"**
 
 *Explore the Universe. Decode Cosmic Mysteries.*
@@ -15,17 +14,20 @@
 
 </div>
 
+=======
+>>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 A public web viewer for NASA's SPHEREx infrared sky survey, built by MaVionix for the 2026 NASA
-Space Apps Challenge, "Planet X and SPHEREx".
+Space Apps Challenge, "Planet X and SPHEREx". 
 
 Type a sky position or an object's name. COSMOS finds every SPHEREx image of that spot in the
-NASA/IPAC Infrared Science Archive (IRSA) and lets you blink, swipe or difference any two visits
-to see what changed. It also finds things that moved, checks them against JPL's catalogue of known
+NASA/IPAC Infrared Science Archive (IRSA) and lets you blink, swipe or difference any two visits to
+see what changed. It also finds things that moved, checks them against JPL's catalogue of known
 bodies, builds a spectrum from repeat visits, and shows what SPHEREx can and cannot say about
 Planet Nine.
 
-> **Note:** you may directly download the zip file of this repository for ease.
+![The viewer](docs/screenshots/viewer.png)
 
+<<<<<<< HEAD
 ![The COSMOS viewer: every visit of a field, with live RA/Dec, brightness and wavelength under the cursor](docs/screenshots/laptop/02-viewer.png)
 
 > **Scientific-integrity statement. What this tool does not claim.** It has not found Planet X and
@@ -87,20 +89,28 @@ direction (things that move):
 All captured at 1440×900 in sample mode.
 
 | Start page | Sky globe |
+=======
+| | |
+>>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 |---|---|
-| ![Landing page with a blinking deep field](docs/screenshots/laptop/01-landing.png) | ![3D sky globe for choosing a position](docs/screenshots/laptop/08-sky-globe.png) |
-| A blinking deep field behind the search box and the showcase fields. | Real bright stars, constellations, ecliptic and SPHEREx's deep fields. Turn it and click to choose a position. |
+| ![Sky globe](docs/screenshots/globe.png) | ![Image as a 3D surface](docs/screenshots/viewer-surface.png) |
+| ![Outer Solar System in 3D](docs/screenshots/planet-nine.png) | ![Measuring one source in every visit](docs/screenshots/viewer-measure.png) |
 
+<<<<<<< HEAD
 | Viewer: measure a source in every visit | Difference two visits |
 |---|---|
 | ![Measuring one source in every visit](docs/screenshots/laptop/viewer-measure.png) | ![Difference image of two visits](docs/screenshots/laptop/03-difference.png) |
 | Click a star to see its brightness, wavelength and SNR in each visit. | Red is brighter in B, blue is brighter in A. A warning appears when the two wavelengths differ. |
+=======
+All screenshots here were taken in sample mode, so they carry the "Synthetic sample" badge.
+>>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
-| Detected movers on the image | Movers table with JPL match |
-|---|---|
-| ![Viewer with mover overlays](docs/screenshots/laptop/04-viewer-movers.png) | ![Movers page](docs/screenshots/laptop/05-movers.png) |
-| Tracks and JPL-predicted known bodies drawn over the field. | Each track labelled *known* or *unmatched*, with the evidence. |
+> **What this tool does not claim.** It has not found Planet X and says so on every page. A track
+> that matches no catalogued body is labelled *unmatched*, never *new*. When the archive cannot be
+> reached, the site shows a generated test field that is labelled "Synthetic sample, not SPHEREx
+> data" on screen, in exported images and in the CSV.
 
+<<<<<<< HEAD
 | Spectrum from repeat visits | Planet Nine in 3D |
 |---|---|
 | ![Spectrum page](docs/screenshots/laptop/06-spectrum.png) | ![Outer Solar System and Planet Nine](docs/screenshots/laptop/07-planet-nine.png) |
@@ -118,6 +128,9 @@ All captured at 1440×900 in sample mode.
 ---
 
 ## Quick start
+=======
+## Run it
+>>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 You need Python 3.11 or newer and Node.js 20 or newer.
 
@@ -149,15 +162,12 @@ on Windows or WSL:* the repository keeps Unix line endings for `*.sh`; re-clone 
 
 | | macOS / Linux | Windows |
 |---|---|---|
-| Start with real data | `./run.sh` | `run.bat` |
-| Start with the offline sample | `./run.sh demo` | `run.bat demo` |
-| Check this computer can reach the archive | `./run.sh check` | `run.bat check` |
+| Start with real data | `bash run.sh` | `run.bat` |
+| Start with the offline sample | `bash run.sh demo` | `run.bat demo` |
+| Check this computer can reach the archive | `bash run.sh check` | `run.bat check` |
 
 The first start installs everything and builds the site, which takes a few minutes. Then open
 **http://localhost:3000**. Press Ctrl+C to stop.
-
-`make run`, `make demo`, `make check`, `make test`, `make docker` and `make clean` do the same
-things from the repository root.
 
 With Docker instead: `docker compose up --build`, then open http://localhost:3000.
 For the offline sample: `COSMOS_MODE=demo docker compose up --build`.
@@ -165,19 +175,15 @@ For the offline sample: `COSMOS_MODE=demo docker compose up --build`.
 ### Check live data first
 
 ```bash
-./run.sh check        # Windows: run.bat check
-# or, directly:
-python backend/scripts/verify_irsa.py 270 66.56
+bash run.sh check      # Windows: run.bat check
 ```
 
-This asks IRSA for images of the north ecliptic pole, downloads one cutout, reads every part of
-it, and queries both JPL services. It prints `ALL LIVE CHECKS PASSED` or says exactly which step
-failed and which URL to open in a browser.
-
-> **The live path was developed from the archive's published documentation in an environment
-> without access to IRSA or JPL, and has been tested only against a stand-in archive. Run this
-> check before relying on, or presenting, real data.** If the release names have changed, set
-> `COSMOS_SPHEREX_COLLECTIONS` in `backend/.env`.
+This asks IRSA for images of the north ecliptic pole, downloads one cutout, reads every part of it,
+and queries both JPL services. It prints `ALL LIVE CHECKS PASSED` or says exactly which step failed
+and which URL to open in a browser. **The live path was developed from the archive's published
+documentation in an environment without access to IRSA or JPL, and has been tested only against a
+stand-in archive. Run this check before relying on, or presenting, real data.** If the release
+names have changed, set `COSMOS_SPHEREX_COLLECTIONS` in `backend/.env`.
 
 The dot beside the site name shows the result at a glance: "Archive online" or "Sample data".
 
@@ -197,40 +203,27 @@ npm run dev
 ```
 
 The website forwards `/api/*` to the API, so there is nothing to configure when both run on one
-machine. To point it elsewhere, set `COSMOS_API_URL` (see `frontend/.env.example`). If you prefer
-the browser to call the API directly, set `NEXT_PUBLIC_API_URL=http://localhost:8000` in
-`frontend/.env.local` and make sure `COSMOS_CORS_ORIGINS` on the API includes the site address.
+machine. To point it elsewhere, set `COSMOS_API_URL` (see `frontend/.env.example`).
 
-### Live mode and the labelled fallback
-
-In `live` mode the API falls back to the labelled synthetic sample **only** if IRSA returns
-nothing and `COSMOS_ALLOW_SYNTHETIC_FALLBACK=true` (the default). Set it to `false`, for example
-when judging, if you would rather get a hard error than sample data.
-
----
-
-## Features, page by page
+## What is in it
 
 | Page | What you can do |
 |---|---|
 | **Start page** | A blinking deep field, and a 3D globe of the whole sky (real bright stars, constellations, ecliptic, SPHEREx's deep fields) that you turn and click to choose a position. |
 | **Viewer** | See every visit of a field. Step, blink, swipe or difference two visits, play all visits as a timelapse, or view the image as a 3D surface with brightness as height. Click a star to measure it in every visit. Zoom and pan with mouse, touch or keyboard. Read RA/Dec, surface brightness and the wavelength recorded at the cursor. Overlay JPL-predicted known bodies and detected movers. Copy a link to the exact view. Save the view as a captioned PNG. |
-| **Movers** | 5σ source extraction per visit, then cross-visit linking, then a JPL SBIdent match. Sources found in one visit and not the others are linked into tracks, each compared with JPL's predictions and labelled *known* or *unmatched* with the evidence. Evidence cards and a CSV download. |
-| **Spectrum** | Forced aperture photometry of one source (or along a track) in every visit, giving a sparse 0.75 to 5 µm spectrum, with an indicative comparison against five simple shapes. |
-| **Planet Nine** | The outer Solar System in 3D: orbits of the most distant known objects with their real tilts, the giant planets at today's positions from JPL's planetary elements, and one published model of the proposed orbit drawn as a hypothesis. Also a reflected-light brightness calculator and a measured completeness curve for the current field. |
-| **How it works** | Data sources, each processing step, limits, privacy, and how the site was built. |
+| **Movers** | Sources found in one visit and not the others, linked into tracks, each compared with JPL's predictions and labelled *known* or *unmatched* with the evidence. CSV download. |
+| **Spectrum** | Aperture photometry of one source in every visit, giving a sparse 0.75 to 5 µm spectrum, with an indicative comparison against five simple shapes. |
+| **Planet Nine** | The outer Solar System in 3D: orbits of the most distant known objects with their real tilts, the giant planets at today's positions from JPL's planetary elements, and one published model of the proposed orbit drawn as a hypothesis. Also a brightness calculator and a measured completeness curve for the current field. |
+| **How it works** | The problem, the solution, the business model, the novelty, sourced market sizes and revenue scenarios, beside the full mathematical formulation: fourteen formulas with derivations and proofs. Then data sources, limits and privacy. |
 
-### Viewer modes
+Keyboard in the viewer: `←` `→` change visit A, `[` `]` change visit B, `space` plays or pauses,
+`1` to `6` switch mode, `i` inverts, `+` `-` `0` zoom and fit.
 
-| Key | Mode | What it shows |
-|---|---|---|
-| `1` | step | One visit at a time. |
-| `2` | blink | Alternates visit A and B. Stars stay put, noise changes, movers jump. |
-| `3` | swipe | A slider reveals B over A. |
-| `4` | difference | Noise-scaled B minus A on a red/blue ramp. |
-| `5` | timelapse | Every visit in date order. |
-| `6` | 3D surface | Brightness as height. |
+The background of every page is the real sky (Hipparcos and Tycho stars at their catalogued
+positions and colours), looking at a different region on each page. The foot of the page says
+which. The 3D views need WebGL; where it is missing the site shows the flat equivalents.
 
+<<<<<<< HEAD
 **Keyboard in the viewer:** `←` `→` change visit A, `[` `]` change visit B, `space` plays or
 pauses, `1` to `6` switch mode, `i` inverts, `+` `-` `0` zoom and fit.
 
@@ -253,63 +246,41 @@ equivalents.
 ## Architecture
 
 ![COSMOS architecture](docs/screenshots/laptop/architecture.svg)
+=======
+## How it is put together
+>>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 ```
 frontend/   Next.js 16, React 19, TypeScript, Tailwind 4, Recharts, three.js
-            src/components/SkyCanvas.tsx        canvas viewer: 16-bit pixels, asinh stretch, WCS readout
-            src/components/SkyGlobe.tsx         3D sky globe for choosing a field
-            src/components/Surface3D.tsx        image as a 3D surface
-            src/components/OrbitScene3D.tsx     outer Solar System in 3D
+            src/components/SkyCanvas.tsx     canvas viewer: 16-bit pixels, asinh stretch, WCS readout
+            src/components/SkyGlobe.tsx      3D sky globe for choosing a field
+            src/components/Surface3D.tsx     image as a 3D surface
+            src/components/OrbitScene3D.tsx  outer Solar System in 3D
             src/components/SpaceBackground.tsx  real-sky background, one region per page
-            src/lib/orbits.ts                   JPL planetary elements, Kepler maths, Planet Nine reference
-            src/lib/skyScene.ts                 which region of sky each page faces
-            src/lib/three-stage.ts              shared three.js wrapper for all 3D views
-            src/lib/wcs.ts                      gnomonic (TAN) projection maths
-            src/app/api/[...path]/route.ts      same-origin proxy to the API
+            src/lib/orbits.ts                JPL planetary elements, Kepler maths, Planet Nine reference
+            src/lib/skyScene.ts              which region of sky each page faces
+            src/app/api/[...path]/route.ts   same-origin proxy to the API
 backend/    FastAPI, Astropy, photutils, NumPy, SciPy, httpx
-            app/core/irsa.py                    IRSA image search and cutouts, cached on disk
-            app/core/fits_tools.py              SPHEREx multi-extension FITS reader (defensive)
-            app/core/render.py                  asinh stretch, WCS reprojection, difference imaging
-            app/core/service.py                 field loading, parallel downloads, fallback rules
-            app/science/movers.py               detection, linking, scoring, distance hint
-            app/science/jpl.py                  SBIdent (known bodies) and SBDB (TNO elements)
-            app/science/spectrum.py             forced photometry and templates
-            app/science/detectability.py        Planet Nine brightness, injection-recovery
-            app/data/synthetic.py               the labelled offline sample
-            scripts/verify_irsa.py              live-data check used by `run.sh check`
-tests/      e2e_smoke.py                        browser test of every page, desktop and phone
+            app/core/irsa.py                 IRSA image search and cutouts, cached on disk
+            app/core/fits_tools.py           SPHEREx multi-extension FITS reader
+            app/core/service.py              field loading, parallel downloads, fallback rules
+            app/science/                     movers, JPL matching, spectra, detectability
+            app/data/synthetic.py            the labelled offline sample
+tests/      e2e_smoke.py                     browser test of every page, desktop and phone
 docs/       methods, datasets, architecture, testing, deployment, pitch, demo script
 ```
 
-There is no database. Cutouts are cached on disk and JPL answers are cached as JSON.
+There is no database. Cutouts are cached on disk and JPL answers as JSON.
 
-### What the browser receives
+## Tests
 
-Each frame ships its quantised 16-bit pixels (about 20 kB for a 100×100 cutout), a TAN WCS and a
-16×16 wavelength grid. The canvas applies the stretch, draws blink, swipe and difference, and
-computes RA/Dec and wavelength under the cursor with no further requests. A small PNG thumbnail is
-included for lists.
-
-### Why these choices
-
-- **FastAPI and Astropy.** The SPHEREx MEF, the WCS-WAVE lookup table and reprojection are native
-  to the Python astronomy stack, so there is no reimplementation risk.
-- **Cutouts, not files.** A 70 MB MEF per detector per visit would make a live web tool unusable.
-  IBE cutouts (about 100×100 px, under 1 MB) keep first load under a minute even for 20+ visits.
-- **16-bit pixels and WCS to the browser.** Interaction needs no round trips.
-- **No database by default.** Disk cache plus URL state are enough. An optional schema is below.
-- **Classical detection.** DAOStarFinder, linking and ephemeris matching are explainable and need
-  no labelled training set. A machine-learning real/bogus classifier is the natural next step.
-- **Next.js App Router.** Static pages and URL-driven state give shareable links to a field and a
-  candidate, with good enough SEO for a public tool.
-
-### Request path and operations
-
-```
-browser ──► website (Next.js) ──/api/*──► API (FastAPI) ──► IRSA, JPL, CDS
-            same origin           gzip, rate limit, request id, security headers
+```bash
+cd backend && python -m pytest -q                         # 43 tests, no network needed
+cd frontend && npm run typecheck && npm run lint && npm run build
+bash run.sh demo & python tests/e2e_smoke.py                 # browser test; needs playwright
 ```
 
+<<<<<<< HEAD
 - The browser never calls the API host directly. `frontend/src/app/api/[...path]/route.ts`
   forwards the request and reads `COSMOS_API_URL` at run time, so one built image works on any host.
 - `core/service.py` holds one lock per field, so two simultaneous requests for the same field cause
@@ -878,320 +849,62 @@ serves and where it sits among existing tools. It contains no sales or market-si
 | Vercel website, API elsewhere | see [Deployment](#deployment) | Docker service for the API on Render, Railway, Fly or a VM. |
 
 ---
+=======
+The backend tests cover the FITS reader, reprojection, mover detection on a field with a known
+injected mover, photometry, the Planet Nine estimate, every API route, rate limiting, and the live
+code path run against a stand-in archive (partial failure, outage, fallback and recovery), and the
+awkward cases real data brings: cutouts padded with empty pixels, forty visits of one field, blank
+cells in the archive's answer, and malformed requests. See
+`docs/TESTING.md`. GitHub Actions runs the backend and frontend checks on every push.
+>>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 ## Settings
 
-Backend settings are environment variables (prefix `COSMOS_`) or lines in `backend/.env`; see
-`backend/.env.example`.
+Backend settings are environment variables or lines in `backend/.env`; see `backend/.env.example`.
 
 | Variable | Default | Meaning |
 |---|---|---|
 | `COSMOS_MODE` | `live` | `live` queries IRSA and JPL. `demo` never touches the network. |
 | `COSMOS_ALLOW_SYNTHETIC_FALLBACK` | `true` | In live mode, show the labelled sample when the archive gives nothing. Set `false` to get an error instead. |
-| `COSMOS_SPHEREX_COLLECTIONS` | `spherex_qr3,spherex_dr1` | IRSA release names, searched newest first. |
-| `COSMOS_IRSA_SIA_URL` | `https://irsa.ipac.caltech.edu/SIA` | SIAv2 endpoint. |
+| `COSMOS_SPHEREX_COLLECTIONS` | `spherex_qr3,spherex_dr1` | IRSA release names, newest first. |
 | `COSMOS_CUTOUT_SIZE_ARCSEC` | `600` | Cutout width, about 98 SPHEREx pixels. |
 | `COSMOS_MAX_EPOCHS` | `40` | Most visits loaded for one field. More are sampled evenly in time. |
-| `COSMOS_SURVEY_DEPTH_AB` | `19.0` | Approximate per-channel 5σ depth used on the Planet Nine page. |
-| `COSMOS_RATE_LIMIT_PER_MIN` | `120` | Requests per client per minute on data endpoints. `0` turns the limit off. |
+| `COSMOS_SURVEY_DEPTH_AB` | `19.0` | Approximate per-channel depth used on the Planet Nine page. |
+| `COSMOS_RATE_LIMIT_PER_MIN` | `120` | Requests per client per minute. `0` turns the limit off. |
 | `COSMOS_CACHE_DIR` | `/tmp/cosmos-cache` | Where cutouts are cached. |
-| `COSMOS_CORS_ORIGINS` | `http://localhost:3000` | Comma-separated. Only needed if the browser calls the API directly. |
 
-Frontend settings: `COSMOS_API_URL` (run time, where the proxy forwards `/api/*`),
-`NEXT_PUBLIC_API_URL` (only for bypassing the proxy) and `NEXT_PUBLIC_SITE_URL` (the public
-address, for link previews).
-
-Fixed in code (see `backend/app/config.py`): pixel scale 6.15″, detection threshold 5σ, JPL
-SBIdent and SBDB URLs, observer MPC code 500 (geocentre), HTTP timeout 60 s.
-
----
-
-## Deployment
-
-The site is two services: the API (`backend/`, Python) and the website (`frontend/`, Node). The
-website forwards `/api/*` to the API, so visitors only ever talk to one address and no CORS setup
-is needed. The website finds the API through one runtime setting, `COSMOS_API_URL`.
-
-Whatever host you use, do these three things after the first deploy:
-
-1. Open `https://<your-site>/api/status`. `"serving": "spherex"` means the server can reach IRSA.
-   `"serving": "synthetic"` means it cannot, and visitors will see the labelled sample.
-2. Open the north ecliptic pole field once so its cutouts are cached.
-3. Set `NEXT_PUBLIC_SITE_URL` to the public address so link previews work, then rebuild the website.
-
-### Option A: one machine with Docker (fastest for judging)
-
-```bash
-git clone <your-repository> && cd mavionix-cosmos
-cp backend/.env.example backend/.env           # edit if needed
-docker compose up --build -d
-# web: http://<host>:3000   api docs: http://<host>:8000/docs
-```
-
-Put a reverse proxy with HTTPS (Caddy, nginx, or a tunnel) in front of port 3000. Port 8000 does
-not need to be public; remove its `ports` line in `docker-compose.yml` if you like.
-
-Warm the cache for the showcase fields so the first visitor does not wait:
-
-```bash
-for f in "ra=270&dec=66.56" "ra=90&dec=-66.56" "ra=45&dec=15" "ra=86&dec=28.9"; do
-  curl -s "http://localhost:3000/api/sky/epochs?$f" > /dev/null
-done
-```
-
-### Option B: Render
-
-`render.yaml` describes both services (`cosmos-api` and `cosmos-web`). In Render choose New, then
-Blueprint, and pick the repository. This blueprint has not been run end to end by us, so check
-both services after the first deploy: the website's `COSMOS_API_URL` should hold the API
-service's internal address. Free instances sleep when idle, which makes the first request slow,
-and have no persistent disk, so the cutout cache is lost on restart. Add a disk mounted at
-`/cache` on a paid plan to keep it. One vCPU and 1 GB is enough.
-
-### Option C: website on Vercel, API elsewhere
-
-1. Deploy `backend/` as a Docker service on any host (Render, Railway, Fly, a VM), with a
-   persistent volume at `/cache` if you want the cutout cache to survive restarts.
-2. Import `frontend/` into Vercel and set `COSMOS_API_URL=https://<your-api-address>`.
-3. Serverless functions have short time limits, and a field seen for the first time can take up to
-   a minute. If first lookups time out, bypass the proxy: set
-   `NEXT_PUBLIC_API_URL=https://<your-api-address>` on Vercel and
-   `COSMOS_CORS_ORIGINS=https://<your-site-address>` on the API, then redeploy both.
-
-### Option D: a stand with no internet
-
-`./run.sh demo` or `COSMOS_MODE=demo docker compose up`. Every screen works and is labelled as
-sample data.
-
-To show real data without a connection, visit your fields while online with a persistent cache
-directory, then go offline with `COSMOS_ALLOW_SYNTHETIC_FALLBACK=false`. Cached cutouts are
-reused, but the list of visits is still requested from IRSA each time the server restarts, so keep
-the server running between warming and showing. Uncached fields then fail loudly instead of
-silently switching to synthetic data.
-
-### Running it responsibly
-
-- The API identifies itself to IRSA with a descriptive User-Agent (set in `core/irsa.py`),
-  downloads at most four cutouts at a time, and caches every cutout on disk by URL, position and
-  size. JPL orbit tables are cached for 24 hours.
-- Each client is limited to 120 data requests a minute (`COSMOS_RATE_LIMIT_PER_MIN`). The limit is
-  kept in memory per worker process; put a real rate limiter in your reverse proxy for a busy site.
-- Behind a proxy, the API trusts `X-Forwarded-For` to tell clients apart. Do not expose port 8000
-  directly to the internet in that setup.
-- Clear old cutouts when the disk fills: `find /cache -name '*.fits' -mtime +14 -delete`.
-- Logs carry a request id that is also returned in the `X-Request-ID` header, so a visitor's error
-  report can be matched to a log line.
-- Containers run as a non-root user.
-
----
-
-## Tests and validation
-
-```bash
-cd backend && python -m pytest -q                         # 21 tests, no network needed
-cd frontend && npm run typecheck && npm run lint && npm run build
-./run.sh demo & python tests/e2e_smoke.py                 # browser test; needs playwright
-```
-
-GitHub Actions runs the backend and frontend checks on every push. The full report is in
-[`docs/TESTING.md`](docs/TESTING.md).
-
-### Backend tests (offline, reproducible)
-
-| Test | What it proves |
-|---|---|
-| `test_mef_roundtrip_reads_all_documented_hdus` | The reader handles IMAGE, FLAGS, VARIANCE, ZODI and WCS-WAVE, detector and MJD headers, and the synthetic flag. |
-| `test_wavelength_fallback_to_band_range` | A missing WCS-WAVE degrades to the band centre with an explicit `band-range-only` label. |
-| `test_reprojection_is_identity_on_same_wcs` | WCS reprojection introduces under 1e-4 error on identity. |
-| `test_stretch_outputs_uint8` | The display stretch is well-formed. |
-| `test_mover_detection_recovers_injected_track` | A 3.2 px/visit injected mover is recovered as one 2+ visit track with a plausible rate, status `unmatched` (never "discovered"). |
-| `test_no_movers_in_static_field` | Zero false tracks on a static star field with independent noise per visit. |
-| `test_forced_photometry_and_classification` | Positive fluxes with `wcs-wave` wavelengths on a static star; the classifier returns a best template labelled *indicative*. |
-| `test_planet_nine_is_too_faint_for_single_exposure` | Default Planet Nine parameters give V > 21 and `detectable = False`, with parallax above 30 px. |
-| `test_injection_recovery_curve_is_monotone_ish` | Completeness at least 0.8 at 14 AB and at most 0.2 at 22 AB on synthetic data. |
-| `test_api_health_and_showcase` | Service and showcase endpoints. |
-| `test_api_epochs_are_labelled_synthetic_in_demo_mode` | Demo responses carry `source="synthetic"`, a SYNTHETIC warning, and per-frame flags. |
-| `test_api_diff_movers_spectrum_report` | End to end: diff, then movers (with thumbnails and disclaimer), then spectrum along the track, then the CSV report. |
-| `test_api_validation` | 400 on missing or invalid coordinates. |
-| `test_status_and_headers_in_demo_mode` | `/api/status` reports sample mode; security headers and a request id are set. |
-| `test_rate_limit_returns_429` | The per-client limit answers 429 with `Retry-After`; health checks are never limited. |
-
-### The live code path against a stand-in archive (`tests/test_live_path.py`)
-
-These replace the HTTP transport with a fake that answers as IRSA's documentation describes: a
-VOTable from the image search and a FITS cutout from each access URL. They prove the plumbing, not
-that the real archive agrees; only `scripts/verify_irsa.py` can show that.
-
-| Test | What it proves |
-|---|---|
-| `test_live_field_is_labelled_irsa_and_time_ordered` | Two releases are queried, six cutouts fetched in parallel, visits come back in time order labelled `irsa`, and a repeat call downloads nothing. |
-| `test_one_failing_release_is_skipped_with_a_warning` | A release that answers HTTP 500 is left out with a visible warning; the other still loads. |
-| `test_outage_falls_back_then_recovers` | With the archive down the labelled sample is served; once it is back, real data is served again. |
-| `test_fallback_is_cached_only_briefly` | An outage fallback is cached for at most 90 seconds. |
-| `test_outage_without_fallback_fails_loudly` | With fallback turned off, an outage is an error, not sample data. |
-| `test_non_fits_answer_is_rejected` | An HTML maintenance page in place of a cutout is refused and not cached. |
-
-### Frontend
-
-`npm run typecheck`, `npm run lint` and `npm run build` pass with no errors or warnings. Two lint
-rules are switched off with reasons in `eslint.config.mjs`.
-
-### Browser smoke test (`tests/e2e_smoke.py`)
-
-Run against sample mode at 1440×900 and at 390×800 with touch. On each it checks: the landing page
-and its archive status; the viewer's provenance badge; that mode, visits and the movers overlay
-are written to the link; arrow-key control; the PNG export; the Movers page and the step from a
-track to its spectrum; the Planet Nine page; the methods page; the 404 page; a readable error for
-impossible coordinates; no sideways scrolling on any page; and no page errors. It also clicks the
-3D globe to choose a position, opens the 3D surface view, checks the timelapse advances, clicks
-the image to measure a source in every visit, checks the 3D orbit view and its flat alternative,
-and checks that the background caption changes between pages. WebGL runs in software (SwiftShader)
-in this test. **Result on the last run: 44 of 44 checks passed.** Defects this test has caught and
-that are now fixed: the movers checkbox not responding while a search ran, and the header
-overflowing on phones.
-
-### Live validation checklist (run on a connected machine)
-
-1. `./run.sh check`: all five checks pass and the header dot reads "Archive online". Note the
-   number of visits at the North Ecliptic Pole (expect many).
-2. Viewer, NEP field: blink two same-band visits. Stars must be static, the noise pattern must
-   change.
-3. Difference of a *different-band* pair must show the wavelength-mismatch warning.
-4. Movers page on an ecliptic field near opposition: at least one `known` track (main-belt
-   asteroid) with the JPL name and mean separation under 15″.
-5. Movers page on a high-|β|, high-|b| field: zero or only low-score candidates.
-6. Spectrum of a bright static star: at least 6 points spanning at least 3 detectors; a cool-star
-   template preferred.
-7. Injection-recovery on a real NEP cutout: 50% depth within about 0.5 mag of the configured
-   survey depth.
-8. Planet Nine page: the orbit panel shows no "JPL unreachable" notice, and the a > 250 AU,
-   q > 30 AU perihelia cluster on one side.
-
-Record results in `docs/TESTING.md` before submission (date, field, outcome, screenshot path).
-
----
-
-## Demo script (3 minutes)
-
-**Before you start:** API and web running; showcase fields pre-warmed; browser at `/`. Decide in
-advance whether you are on real data or the sample (amber badge) and say it.
-
-| Time | Step | What to say and show |
-|---|---|---|
-| 0:00 | **Hook** | "SPHEREx photographs the entire sky every six months in 102 infrared colours. Anything that moves between those photographs is a Solar System object. Nobody can look at a billion sources by hand, so we built a time machine for the sky." |
-| 0:20 | **Viewer** | Click *North Ecliptic Pole*. "Every SPHEREx image of this spot, pulled live from NASA's archive as cutouts. Here is the date, the detector, and, unique to SPHEREx, the exact wavelength this pixel saw." Switch to *blink*: "Stars stay; noise changes." Switch to *difference* and point at the warning: "Two visits usually see different colours, so we only difference clean pairs; most blink tools get this wrong." |
-| 1:00 | **Movers** | Turn on the movers overlay, or switch to the asteroid-rich field. "Five-sigma detection in every visit, link what disappears and reappears, check JPL's ephemerides." Open the top candidate: "Postage stamps, the motion vector, signal-to-noise, pixel flags, and the verdict: *known*, it is asteroid X. If it were *unmatched* we would say exactly that. Unmatched is not discovered." |
-| 1:45 | **Spectrum** | Click *Build its spectrum*. "Because the wavelength drifts across the detector, every revisit sampled a different colour. Stack them and you get a spectrum from imaging alone. Here it sits closest to a solar-reflectance template: indicative, not a classification." |
-| 2:15 | **Planet Nine** | "These are real orbits of the most distant known objects from JPL; their closest-approach points bunch up on one side, which is the whole argument. A seven-Earth-mass planet at 600 AU is about magnitude 22. SPHEREx reaches about 19. Its motion would be some sixty pixels a year, obvious, but it is three magnitudes too faint. That is why Rubin would find it, if it exists, and why we never claim SPHEREx has." Click *Measure completeness on the current field* to show the curve. |
-| 2:50 | **Close** | "Real data, honest labels, evidence you can download. MaVionix COSMOS: explore the universe, decode cosmic mysteries." |
-
-**Fallbacks.** If IRSA is slow, use a pre-warmed field. If offline, start with `./run.sh demo` and
-say so out loud; the amber badge is on screen anyway.
-
----
-
-## Presentation outline and judging criteria
-
-**Seven slides, about four minutes**
-
-1. **The challenge, in NASA's words.** SPHEREx: all sky, every 6 months, 102 bands, a billion
-   objects, too much for one person.
-2. **Our answer: the SPHEREx Viewer.** One screenshot: a field blinking, a mover circled, its
-   spectrum beside it. *Explore the Universe. Decode Cosmic Mysteries.*
-3. **Live demo (2 minutes).** Showcase field, then step/blink/difference, then the Movers page, a
-   candidate labelled *known*, the spectral fingerprint, the Planet X calculator.
-4. **What makes it different.** Wavelength-aware differencing, spectra from time-domain imaging,
-   explainable evidence cards with JPL identification, measured completeness. Comparison table
-   against existing tools.
-5. **Scientific honesty.** Real-data badge versus synthetic badge; unmatched is not discovered;
-   why SPHEREx cannot see Planet Nine at predicted brightness (V of about 22 to 25 against a depth
-   of about 19) but would see its motion (about 56 px/yr of parallax at 600 AU).
-6. **How it is built.** FastAPI, Astropy and photutils; Next.js and Tailwind; IRSA SIA and
-   cutouts; JPL SBIdent and SBDB; Docker; offline tests; open source.
-7. **Impact and next steps.** Citizen-science triage layer; MPC-format export; real/bogus
-   machine learning with a stated false-positive rate; Zooniverse integration. Team MaVionix,
-   Sonipat.
-
-**Judging criteria mapping**
-
-| Criterion | How COSMOS answers it |
-|---|---|
-| Impact | A public tool over a flagship NASA dataset that teaches what a null result means. |
-| Creativity | Turning the linear-variable-filter wavelength drift into a spectroscopy feature. |
-| Validity | Documented products, DOIs, acknowledgements, stated uncertainties and tests. |
-| Relevance | Answers the brief literally (images over time) and extends it in the brief's own direction (things that move). |
-| Presentation | One coherent product, not six modules. |
-
----
-
-## Troubleshooting
-
-| Symptom | Likely cause and fix |
-|---|---|
-| Header dot says "Sample data" and the badge says "Synthetic sample" | The server cannot reach IRSA, or you started in demo mode. Run `./run.sh check`, then see `https://<site>/api/status`. |
-| `./run.sh check` fails on the image search | IRSA may have renamed a release. Open the URL the script prints and set `COSMOS_SPHEREX_COLLECTIONS` in `backend/.env`. |
-| Planet Nine page shows "JPL unreachable" | SBDB could not be reached. The planets and the proposed orbit still work because they are bundled; retry when online. |
-| First lookup of a field is slow | Cutouts are downloaded on first use (about 1 to 3 s each, four at a time). Warm the cache for your showcase fields, or keep a persistent `COSMOS_CACHE_DIR`. |
-| 3D views are replaced by flat ones | WebGL is unavailable in the browser. The flat equivalents carry the same information. |
-| `429 Too Many Requests` | The per-client limit was hit. Wait for `Retry-After`, or raise `COSMOS_RATE_LIMIT_PER_MIN`. |
-| Browser shows a CORS error when calling the API directly | Add the site address to `COSMOS_CORS_ORIGINS`, or use the default same-origin proxy. |
-| Lookups time out on Vercel | Serverless time limits. Bypass the proxy with `NEXT_PUBLIC_API_URL` and set `COSMOS_CORS_ORIGINS` (see Deployment, option C). |
-| Backend will not start with `<<<<<<<` or `>>>>>>>` in the traceback | A git merge left conflict markers in a file. Resolve them (keep one side), then restart. |
-
----
-
-## Glossary
-
-| Term | Meaning |
-|---|---|
-| **SPHEREx** | Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer, NASA's all-sky infrared survey mission. |
-| **IRSA** | NASA/IPAC Infrared Science Archive, which hosts SPHEREx data. |
-| **SIA / SIAv2** | Simple Image Access, a standard way to search an archive for images by position. |
-| **IBE cutout** | A server-side crop of a large FITS file, so only a small region is downloaded. |
-| **MEF** | Multi-extension FITS: one file holding several image layers (IMAGE, FLAGS, VARIANCE, ZODI, WCS-WAVE). |
-| **WCS** | World Coordinate System, the mapping from pixel to sky position (and here, to wavelength). |
-| **LVF** | Linear-variable filter: a filter whose wavelength changes steadily across the detector. |
-| **MJD** | Modified Julian Date, a day count used for observation times. |
-| **MJy/sr** | Mega-Jansky per steradian, the unit of surface brightness in SPHEREx images. |
-| **AB magnitude** | A brightness scale tied to flux density, zero at 3631 Jy. |
-| **ZODI** | Zodiacal light, sunlight scattered by interplanetary dust, the main diffuse background in the infrared. |
-| **TNO** | Trans-Neptunian object, a small body orbiting beyond Neptune. |
-| **SBIdent / SBDB** | JPL services that list known small bodies in a field, and their orbital elements. |
-| **asinh stretch** | A display curve that is linear for faint signal and logarithmic for bright signal. |
-| **Injection-recovery** | Adding fake sources of known brightness to real data and measuring how many the detector finds. |
-| **Completeness** | The fraction of injected sources that are recovered, as a function of brightness. |
-| **Unmatched** | A track that matches no catalogued body. It is a lead, never a discovery claim. |
-
----
+Putting it online is covered in `docs/DEPLOYMENT.md`.
 
 ## Data and credits
 
-- **SPHEREx** spectral images: NASA/JPL-Caltech/IPAC, from the NASA/IPAC Infrared Science
-  Archive. Quick Release 3, DOI 10.26131/IRSA662. Data Release 1, DOI 10.26131/IRSA678.
-- **Small-body positions and orbits:** JPL Solar System Dynamics (SBIdent and Small-Body Database).
-- **Planet orbits and positions:** JPL "Approximate Positions of the Planets", Table 1, bundled in
+- **SPHEREx** spectral images: NASA/JPL-Caltech/IPAC, from the NASA/IPAC Infrared Science Archive.
+  Quick Release 3, DOI 10.26131/IRSA662. Data Release 1, DOI 10.26131/IRSA678.
+- **Small-body positions and orbits**: JPL Solar System Dynamics (SBIdent and Small-Body Database).
+- **Planet orbits and positions**: JPL "Approximate Positions of the Planets", Table 1, bundled in
   `frontend/src/lib/orbits.ts`. This NASA/JPL dataset works with no network connection.
-- **Proposed Planet Nine orbit:** Brown & Batygin (2021), AJ 162, 219. Shown as a hypothesis.
-- **Object names:** CDS Sesame.
-- **Background and globe stars, constellation figures and Milky Way:** Hipparcos and Tycho
-  catalogues as packaged by d3-celestial (BSD-3-Clause, Olaf Frohn). Licence in
-  `frontend/public/data/sky/`.
+- **Proposed Planet Nine orbit**: Brown & Batygin (2021), AJ 162, 219. Shown as a hypothesis.
+- **Object names**: CDS Sesame.
+- **Formula typesetting**: KaTeX (MIT licence), run at build time.
+- **Background and globe stars, constellation figures and Milky Way**: Hipparcos and Tycho catalogues as packaged by d3-celestial
+  (BSD-3-Clause, Olaf Frohn). Licence in `frontend/public/data/sky/`.
 
-> "This product makes use of data from the Spectro-Photometer for the History of the Universe,
-> Epoch of Reionization and Ices Explorer (SPHEREx), which is a joint project of the Jet Propulsion
-> Laboratory and the California Institute of Technology, and is funded by NASA."
+"This product makes use of data from the Spectro-Photometer for the History of the Universe, Epoch
+of Reionization and Ices Explorer (SPHEREx), which is a joint project of the Jet Propulsion
+Laboratory and the California Institute of Technology, and is funded by NASA."
 
-COSMOS is a student project. It is not affiliated with or endorsed by NASA, JPL or Caltech, and
-uses no NASA logos or mission insignia.
-
----
+COSMOS is a student project by Team MaVionix for the NASA Space Apps Challenge 2026, San Diego. It
+is not affiliated with or endorsed by NASA, JPL or Caltech. The Space Apps San Diego event logo
+(`frontend/public/space-apps-san-diego.png`) belongs to NASA Space Apps and is shown unmodified to
+identify the event; no other NASA marks are used.
 
 ## Use of AI tools
 
-Code debugging were done with help from an AI assistant (Claude, by Anthropic), and
-were reviewed and tested by the team mavionix. The application contains no AI-generated images, audio in the backgrounds(frontend) and 3D views are drawn by team in the browser from catalogue data, and the offline
-sample field comes from a documented algorithm in `backend/app/data/synthetic.py`. There is no AI model inside the running application.
+The team used an AI assistant to help debug the code, and reviewed and
+tested the result. No images, audio or video in the application are AI-help taken for the backgrounds
+and 3D views(frontend) are drawn in the browser from catalogue data, and the offline sample field is produced
+by a documented algorithm in `backend/app/data/synthetic.py`.
 
+<<<<<<< HEAD
 ---
 
 ## Known gaps and roadmap
@@ -1223,8 +936,8 @@ sample field comes from a documented algorithm in `backend/app/data/synthetic.py
 - Optional PostgreSQL persistence for candidate curation (schema above).
 
 ## Licence and team
+=======
+## Licence
+>>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 Code: MIT, see `LICENSE`. Data remain under their providers' terms.
-
-**Team:** MaVionix ([mavionix.in](https://mavionix.in)), Sonipat local event, 2026 NASA
-International Space Apps Challenge.
