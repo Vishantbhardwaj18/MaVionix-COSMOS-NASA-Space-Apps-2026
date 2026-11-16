@@ -10,7 +10,7 @@
 ![Node](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Astropy%20%C2%B7%20photutils-009688?logo=fastapi&logoColor=white)
-![Tests](https://img.shields.io/badge/backend%20tests-21%20passing-success)
+![Tests](https://img.shields.io/badge/backend%20tests-43%20passing-success)
 ![Licence](https://img.shields.io/badge/code-MIT-blue)
 
 </div>
@@ -120,6 +120,32 @@ All captured at 1440×900 in sample mode.
 ## Quick start
 
 You need Python 3.11 or newer and Node.js 20 or newer.
+
+### How to run it (step by step)
+
+1. **Install the prerequisites:** [Python 3.11+](https://www.python.org/downloads/) and
+   [Node.js 20+](https://nodejs.org/). Check with `python3 --version` and `node --version`
+   (on Windows `python --version`).
+2. **Get the code** and open a terminal in the project root (the folder that contains `run.sh`):
+   ```bash
+   git clone https://github.com/<your-account>/MaVionix-COSMOS-NASA-Space-Apps-2026.git
+   cd MaVionix-COSMOS-NASA-Space-Apps-2026
+   ```
+   If you downloaded a ZIP instead, unzip it and `cd` into the folder.
+3. **Start it.** For a first try, use the offline sample, which needs no internet and no accounts:
+   - macOS / Linux: `./run.sh demo` (if you get "permission denied", run `chmod +x run.sh` once)
+   - Windows: `run.bat demo`
+4. **Wait for the first start** (a few minutes: it creates `backend/.venv`, installs the Python and
+   npm packages, and builds the website). Later starts take seconds.
+5. **Open http://localhost:3000** in your browser. The API and its docs are at
+   http://localhost:8000/docs. Press `Ctrl+C` in the terminal to stop.
+6. **Use real SPHEREx data** (needs internet): run `./run.sh check` first. If it prints
+   `ALL LIVE CHECKS PASSED`, start with `./run.sh` (Windows: `run.bat`).
+
+**Troubleshooting.** *Port 3000 or 8000 already in use:* stop the other program. *`bad interpreter`
+on Windows or WSL:* the repository keeps Unix line endings for `*.sh`; re-clone or run
+`dos2unix run.sh`. *Images or formulas not showing in this README:* view it on GitHub, or open
+`docs/README.html`, which has the diagrams and all formulas built in and works offline.
 
 | | macOS / Linux | Windows |
 |---|---|---|
@@ -377,13 +403,13 @@ This section collects every formula in one place.
 
 | Symbol | Value | Meaning |
 |---|---|---|
-| $p_{\rm pix}$ | 6.15″ / pixel | SPHEREx pixel scale |
-| $\Omega_{\rm pix}$ | $(6.15/206265)^2 \approx 8.89\times10^{-10}$ sr | Solid angle of one pixel |
-| $F_0$ | 3631 Jy | AB-magnitude zero point |
+| $`p_{\rm pix}`$ | 6.15″ / pixel | SPHEREx pixel scale |
+| $`\Omega_{\rm pix}`$ | $`(6.15/206265)^2 \approx 8.89\times10^{-10}`$ sr | Solid angle of one pixel |
+| $`F_0`$ | 3631 Jy | AB-magnitude zero point |
 | 206265 | arcsec per radian | Used in every angular conversion |
-| $R_\oplus$ | 6371 km | Earth radius |
+| $`R_\oplus`$ | 6371 km | Earth radius |
 | FWHM | 1.6 px | Assumed PSF width for detection |
-| $\varepsilon$ | 23.4392911° | Mean obliquity of the ecliptic at J2000 |
+| $`\varepsilon`$ | 23.4392911° | Mean obliquity of the ecliptic at J2000 |
 
 ### 1. From position to visits
 
@@ -423,18 +449,24 @@ then a robust median of unflagged pixels.
 
 **Noise.** Where a `VARIANCE` extension exists:
 
-$$\sigma = \sqrt{\mathrm{median}(\mathrm{VARIANCE})}$$
+```math
+\sigma = \sqrt{\mathrm{median}(\mathrm{VARIANCE})}
+```
 
 otherwise the median absolute deviation, scaled to a Gaussian-equivalent sigma:
 
-$$\sigma = 1.4826 \times \mathrm{MAD}$$
+```math
+\sigma = 1.4826 \times \mathrm{MAD}
+```
 
 **Display stretch.** Intensities are clipped between the 1st and 99.5th percentiles
-($\ell$ and $h$), normalised, then passed through an inverse hyperbolic sine so faint structure
+($`\ell`$ and $`h`$), normalised, then passed through an inverse hyperbolic sine so faint structure
 stays visible without saturating bright stars:
 
-$$x = \mathrm{clip}\!\left(\frac{I-\ell}{h-\ell},\,0,\,1\right), \qquad
-y = \frac{\operatorname{asinh}(x/a)}{\operatorname{asinh}(1/a)}, \quad a = 0.1$$
+```math
+x = \mathrm{clip}\!\left(\frac{I-\ell}{h-\ell},\,0,\,1\right), \qquad
+y = \frac{\operatorname{asinh}(x/a)}{\operatorname{asinh}(1/a)}, \quad a = 0.1
+```
 
 Images are upscaled 4× with nearest-neighbour only, so individual SPHEREx pixels stay visible and
 no interpolation can invent structure.
@@ -448,13 +480,17 @@ no interpolation can invent structure.
    and are excluded.
 2. Scale the difference by the quadrature sum of both noise estimates:
 
-$$D = \frac{I_B - I_A}{\sqrt{\sigma_A^2 + \sigma_B^2}}$$
+```math
+D = \frac{I_B - I_A}{\sqrt{\sigma_A^2 + \sigma_B^2}}
+```
 
 3. Render on a diverging ramp: **red = brighter in B, blue = brighter in A**. The ramp saturates at
-   $\pm 5$ in these units.
+   $`\pm 5`$ in these units.
 4. Read each visit's central wavelength from `WCS-WAVE`. If
 
-$$|\lambda_A - \lambda_B| > 0.25\ \mu\mathrm{m}$$
+```math
+|\lambda_A - \lambda_B| > 0.25\ \mu\mathrm{m}
+```
 
    the API returns a warning and the UI lists only the "clean" same-band pairs.
 
@@ -469,32 +505,40 @@ brightness at each wavelength. The figure above is a toy illustration, not SPHER
 
 | Step | Rule | Why |
 |---|---|---|
-| Detect | `photutils.DAOStarFinder`, FWHM 1.6 px, threshold $5\sigma$, border excluded | Standard and transparent. SPHEREx's PSF is about 1 to 2 px at 6.15″/px. |
+| Detect | `photutils.DAOStarFinder`, FWHM 1.6 px, threshold $`5\sigma`$, border excluded | Standard and transparent. SPHEREx's PSF is about 1 to 2 px at 6.15″/px. |
 | Flag check | Any non-zero `FLAGS` value in the 3×3 pixels around a detection marks it `flagged` | Hot pixels, saturation and cosmic rays are flagged upstream. |
 | Reject static | A detection with a counterpart in any other visit within **9″** (1.5 px) is static | Stars and galaxies. |
-| Link | Pairs of transients with separation $\ge 9''$ and rate $\le 400''$/day. Extend to further visits by linear prediction within **27″** | 400″/day covers main-belt rates (tens of ″/h) while rejecting detector-to-detector coincidences. |
+| Link | Pairs of transients with separation $`\ge 9''`$ and rate $`\le 400''`$/day. Extend to further visits by linear prediction within **27″** | 400″/day covers main-belt rates (tens of ″/h) while rejecting detector-to-detector coincidences. |
 | Score | See below | Simple, monotonic, shown beside the reasons. |
 | Identify | JPL SBIdent, **30″** tolerance, all visits must agree on one name, then `known` | Geocentric observer: SPHEREx's 650 km orbit gives under 1″ of parallax beyond 1 AU. |
 
 ![Linking detections into a track](docs/figures/linking-geometry.png)
 
-**Motion rate** of a track with total separation $s$ (arcsec) over $\Delta t$ (days):
+**Motion rate** of a track with total separation $`s`$ (arcsec) over $`\Delta t`$ (days):
 
-$$\dot\theta = \frac{s}{\Delta t}\ \ [''/\mathrm{day}]$$
+```math
+\dot\theta = \frac{s}{\Delta t}\ \ [''/\mathrm{day}]
+```
 
-**Candidate score** ($n$ = number of linked visits, SNR capped at 20):
+**Candidate score** ($`n`$ = number of linked visits, SNR capped at 20):
 
-$$\mathrm{score} = \min\!\left(1,\ 0.3\,(n-1) + \frac{\min(\mathrm{SNR},\,20)}{40}\right)\times
-\begin{cases} 0.6 & \text{if any flagged pixel} \\ 1 & \text{otherwise} \end{cases}$$
+```math
+\mathrm{score} = \min\!\left(1,\ 0.3\,(n-1) + \frac{\min(\mathrm{SNR},\,20)}{40}\right)\times
+\begin{cases} 0.6 & \text{if any flagged pixel} \\ 1 & \text{otherwise} \end{cases}
+```
 
-**Distance hint.** If the whole motion were reflex parallax, with Earth's baseline over $\Delta t$
+**Distance hint.** If the whole motion were reflex parallax, with Earth's baseline over $`\Delta t`$
 days equal to
 
-$$b = \left|\,2\sin\!\left(\frac{\pi\,\Delta t}{365.25}\right)\right|\ \mathrm{AU}$$
+```math
+b = \left|\,2\sin\!\left(\frac{\pi\,\Delta t}{365.25}\right)\right|\ \mathrm{AU}
+```
 
-and total motion $\theta = \dot\theta\,\Delta t$, then
+and total motion $`\theta = \dot\theta\,\Delta t`$, then
 
-$$d \approx \frac{206265''\cdot b}{\theta}\ \ \mathrm{AU}$$
+```math
+d \approx \frac{206265''\cdot b}{\theta}\ \ \mathrm{AU}
+```
 
 ![Earth's baseline and the implied distance](docs/figures/parallax-distance.png)
 
@@ -512,43 +556,55 @@ match, and a `reasons` list. The CSV report reproduces the UI, including the sta
 Because each visit samples a different wavelength, N visits of one source give N points of a
 0.75 to 5 µm spectrum from imaging alone.
 
-**Forced aperture photometry.** Circular aperture $r = 2.5$ px, sky annulus 4.5 to 7.5 px
-(inner radius $r+2$, outer $r+5$). With $A_{\rm ap}$ the aperture area in pixels:
+**Forced aperture photometry.** Circular aperture $`r = 2.5`$ px, sky annulus 4.5 to 7.5 px
+(inner radius $`r+2`$, outer $`r+5`$). With $`A_{\rm ap}`$ the aperture area in pixels:
 
-$$S_{\rm net} = \sum_{\rm ap} I \;-\; \bar I_{\rm sky}\,A_{\rm ap}\qquad[\mathrm{MJy/sr\cdot px}]$$
+```math
+S_{\rm net} = \sum_{\rm ap} I \;-\; \bar I_{\rm sky}\,A_{\rm ap}\qquad[\mathrm{MJy/sr\cdot px}]
+```
 
-$$\sigma_S = \sigma\sqrt{A_{\rm ap}}, \qquad \mathrm{SNR} = \frac{S_{\rm net}}{\sigma_S}$$
+```math
+\sigma_S = \sigma\sqrt{A_{\rm ap}}, \qquad \mathrm{SNR} = \frac{S_{\rm net}}{\sigma_S}
+```
 
 **Flux density and AB magnitude:**
 
-$$F_\nu\,[\mathrm{Jy}] = S_{\rm net}\times 10^{6}\times\Omega_{\rm pix}$$
+```math
+F_\nu\,[\mathrm{Jy}] = S_{\rm net}\times 10^{6}\times\Omega_{\rm pix}
+```
 
-$$m_{\rm AB} = -2.5\,\log_{10}\!\left(\frac{F_\nu}{3631\ \mathrm{Jy}}\right)$$
+```math
+m_{\rm AB} = -2.5\,\log_{10}\!\left(\frac{F_\nu}{3631\ \mathrm{Jy}}\right)
+```
 
 Each point's wavelength comes from `WCS-WAVE` at the aperture centre
 (`wavelength_source = "wcs-wave"`), otherwise from the detector band centre
 (`"band-range-only"`). The UI states which one it used.
 
-**Template comparison.** Five analytic shapes $T_k(\lambda)$ are each normalised to a peak of 1
+**Template comparison.** Five analytic shapes $`T_k(\lambda)`$ are each normalised to a peak of 1
 (see the right-hand panel of the figure in section 3):
 
 | Template | Shape |
 |---|---|
 | Solar reflectance (neutral asteroid or TNO) | Planck function at 5772 K |
 | Icy surface (H₂O ice features) | Solar continuum with Gaussian dips near 3.1, 2.0 and 1.5 µm |
-| Red, organic-rich TNO | Solar continuum × $\lambda^{0.8}$ |
+| Red, organic-rich TNO | Solar continuum × $`\lambda^{0.8}`$ |
 | Cool star / M dwarf | Planck function at 3300 K |
 | Brown dwarf-like | Planck function at 1200 K |
 
-Planck shape in frequency, $\nu = c/\lambda$:
+Planck shape in frequency, $`\nu = c/\lambda`$:
 
-$$B_\nu(T) \propto \frac{\nu^{3}}{e^{h\nu/k_BT}-1}$$
+```math
+B_\nu(T) \propto \frac{\nu^{3}}{e^{h\nu/k_BT}-1}
+```
 
-For each template the best-fit scale $s$ is a weighted least-squares solution, and templates are
-ranked by reduced $\chi^2$:
+For each template the best-fit scale $`s`$ is a weighted least-squares solution, and templates are
+ranked by reduced $`\chi^2`$:
 
-$$s = \frac{\sum_i f_i\,T_i/e_i^{2}}{\sum_i T_i^{2}/e_i^{2}}, \qquad
-\chi^2_{\rm red} = \frac{1}{N-1}\sum_i\left(\frac{f_i - s\,T_i}{e_i}\right)^{2}$$
+```math
+s = \frac{\sum_i f_i\,T_i/e_i^{2}}{\sum_i T_i^{2}/e_i^{2}}, \qquad
+\chi^2_{\rm red} = \frac{1}{N-1}\sum_i\left(\frac{f_i - s\,T_i}{e_i}\right)^{2}
+```
 
 At least 3 positive-flux points with wavelengths are required. The result is labelled
 *indicative*: a real classification would use a spectral library and the ePSF.
@@ -559,39 +615,49 @@ At least 3 positive-flux points with wavelengths are required. The result is lab
 
 **Size.** When no radius is given, a simple mass-radius power law is used:
 
-$$R = M^{0.5}\ R_\oplus, \qquad D = 2R\times 6371\ \mathrm{km}$$
+```math
+R = M^{0.5}\ R_\oplus, \qquad D = 2R\times 6371\ \mathrm{km}
+```
 
-**Absolute magnitude** (standard small-body relation, geometric albedo $p_V$):
+**Absolute magnitude** (standard small-body relation, geometric albedo $`p_V`$):
 
-$$H = 5\log_{10}\!\left(\frac{1329\ \mathrm{km}}{D\sqrt{p_V}}\right)$$
+```math
+H = 5\log_{10}\!\left(\frac{1329\ \mathrm{km}}{D\sqrt{p_V}}\right)
+```
 
-**Apparent magnitude** at heliocentric distance $r$ and geocentric distance $\Delta = r - 1$ AU,
+**Apparent magnitude** at heliocentric distance $`r`$ and geocentric distance $`\Delta = r - 1`$ AU,
 at opposition (phase angle about 0):
 
-$$V = H + 5\log_{10}(r\,\Delta), \qquad J_{\rm AB} \approx V + 0.1$$
+```math
+V = H + 5\log_{10}(r\,\Delta), \qquad J_{\rm AB} \approx V + 0.1
+```
 
-The offset of 0.1 comes from solar colours: a neutral reflector has $V-J \approx +1.0$.
+The offset of 0.1 comes from solar colours: a neutral reflector has $`V-J \approx +1.0`$.
 
 **Margin against survey depth** (`COSMOS_SURVEY_DEPTH_AB`, default 19.0, flagged "approximate" in
 the UI):
 
-$$\mathrm{margin} = m_{\rm depth} - J_{\rm AB}$$
+```math
+\mathrm{margin} = m_{\rm depth} - J_{\rm AB}
+```
 
-**Motion would still be obvious.** Annual parallax amplitude and orbital motion at distance $d$ AU:
+**Motion would still be obvious.** Annual parallax amplitude and orbital motion at distance $`d`$ AU:
 
-$$\varpi = \frac{206265''}{d}, \qquad
+```math
+\varpi = \frac{206265''}{d}, \qquad
 \varpi_{\rm px} = \frac{\varpi}{6.15''}, \qquad
-\dot\theta_{\rm orb} \approx \frac{360\times3600''}{d^{3/2}}\ \ [''/\mathrm{yr}]$$
+\dot\theta_{\rm orb} \approx \frac{360\times3600''}{d^{3/2}}\ \ [''/\mathrm{yr}]
+```
 
 **Worked example** with the default inputs (7 M⊕, albedo 0.4, 600 AU):
 
 | Quantity | Value |
 |---|---|
-| Radius $R$ | 2.65 R⊕ |
-| Diameter $D$ | 33,712 km |
-| $H$ | −6.03 |
-| $V$ | 21.75 |
-| $J_{\rm AB}$ | about 21.85 |
+| Radius $`R`$ | 2.65 R⊕ |
+| Diameter $`D`$ | 33,712 km |
+| $`H`$ | −6.03 |
+| $`V`$ | 21.75 |
+| $`J_{\rm AB}`$ | about 21.85 |
 | Margin against depth 19.0 | **−2.85 mag** (about 3 mag too faint in one exposure) |
 | Parallax amplitude | 343.8″ ≈ **55.9 pixels** per year |
 | Orbital motion | about 88.2″ per year |
@@ -608,44 +674,60 @@ not close a 3 mag gap on its own.
 
 **Injection-recovery completeness.** To answer "what could we have seen *here*?", Gaussian-PSF
 sources are injected into the real cutout at a grid of AB magnitudes and recovered with the same
-detector (recovery counts if within 1.5 px). For each magnitude $m$:
+detector (recovery counts if within 1.5 px). For each magnitude $`m`$:
 
-$$F_\nu = 3631\ \mathrm{Jy}\times10^{-0.4\,m}, \qquad
+```math
+F_\nu = 3631\ \mathrm{Jy}\times10^{-0.4\,m}, \qquad
 A = \frac{F_\nu\times10^{-6}/\Omega_{\rm pix}}{2\pi\sigma_{\rm PSF}^{2}}, \qquad
-\sigma_{\rm PSF} = \frac{\mathrm{FWHM}}{2.3548}$$
+\sigma_{\rm PSF} = \frac{\mathrm{FWHM}}{2.3548}
+```
 
-$$C(m) = \frac{N_{\rm recovered}}{N_{\rm injected}}$$
+```math
+C(m) = \frac{N_{\rm recovered}}{N_{\rm injected}}
+```
 
 Default grid: 15, 16, 17, 18, 18.5, 19, 19.5, 20, 21 AB, with 12 injections each (up to 40). The
 50% completeness depth is found by linear interpolation between the two grid points that bracket
-$C = 0.5$:
+$`C = 0.5`$:
 
-$$m_{50} = m_a + \frac{C_a - 0.5}{C_a - C_b}\,(m_b - m_a)$$
+```math
+m_{50} = m_a + \frac{C_a - 0.5}{C_a - C_b}\,(m_b - m_a)
+```
 
 ### 8. Orbit geometry in the 3D views
 
 Planet positions use NASA/JPL's "Approximate Positions of the Planets" (Table 1, valid 1800 to
-2050). Each element $q$ is propagated from J2000 with its rate per Julian century,
-$T = (\mathrm{JD} - 2451545.0)/36525$:
+2050). Each element $`q`$ is propagated from J2000 with its rate per Julian century,
+$`T = (\mathrm{JD} - 2451545.0)/36525`$:
 
-$$q(T) = q_0 + \dot q\,T, \qquad q \in \{a,\ e,\ I,\ L,\ \varpi,\ \Omega\}$$
+```math
+q(T) = q_0 + \dot q\,T, \qquad q \in \{a,\ e,\ I,\ L,\ \varpi,\ \Omega\}
+```
 
-with argument of perihelion $\omega = \varpi - \Omega$ and mean anomaly $M = L - \varpi$.
-**Kepler's equation** is solved by Newton iteration (at most 12 steps, tolerance $10^{-10}$):
+with argument of perihelion $`\omega = \varpi - \Omega`$ and mean anomaly $`M = L - \varpi`$.
+**Kepler's equation** is solved by Newton iteration (at most 12 steps, tolerance $`10^{-10}`$):
 
-$$M = E - e\sin E, \qquad E_{k+1} = E_k + \frac{M - (E_k - e\sin E_k)}{1 - e\cos E_k}$$
+```math
+M = E - e\sin E, \qquad E_{k+1} = E_k + \frac{M - (E_k - e\sin E_k)}{1 - e\cos E_k}
+```
 
 True anomaly and orbital radius:
 
-$$\nu = 2\arctan\!\left(\sqrt{\frac{1+e}{1-e}}\,\tan\frac{E}{2}\right), \qquad
-r = \frac{a\,(1-e^{2})}{1 + e\cos\nu}$$
+```math
+\nu = 2\arctan\!\left(\sqrt{\frac{1+e}{1-e}}\,\tan\frac{E}{2}\right), \qquad
+r = \frac{a\,(1-e^{2})}{1 + e\cos\nu}
+```
 
-Ecliptic coordinates rotate into equatorial RA/Dec with the J2000 obliquity $\varepsilon$:
+Ecliptic coordinates rotate into equatorial RA/Dec with the J2000 obliquity $`\varepsilon`$:
 
-$$y_{\rm eq} = y\cos\varepsilon - z\sin\varepsilon, \qquad
-z_{\rm eq} = y\sin\varepsilon + z\cos\varepsilon$$
+```math
+y_{\rm eq} = y\cos\varepsilon - z\sin\varepsilon, \qquad
+z_{\rm eq} = y\sin\varepsilon + z\cos\varepsilon
+```
 
-$$\alpha = \operatorname{atan2}(y_{\rm eq},\,x), \qquad \delta = \operatorname{asin}\!\left(\frac{z_{\rm eq}}{r}\right)$$
+```math
+\alpha = \operatorname{atan2}(y_{\rm eq},\,x), \qquad \delta = \operatorname{asin}\!\left(\frac{z_{\rm eq}}{r}\right)
+```
 
 ![Top-down view of the giant planets and the Planet Nine reference orbit on 2026-11-16](docs/figures/outer-solar-system.png)
 
@@ -1139,8 +1221,6 @@ sample field comes from a documented algorithm in `backend/app/data/synthetic.py
   for genuinely unmatched, high-score candidates.
 - Zooniverse export of evidence cards.
 - Optional PostgreSQL persistence for candidate curation (schema above).
-
-
 
 ## Licence and team
 
