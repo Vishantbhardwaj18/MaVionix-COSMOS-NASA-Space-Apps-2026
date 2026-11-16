@@ -1,0 +1,12 @@
+# Shell scripts must keep Unix line endings even when the repository is cloned on Windows,
+# or run.sh and the Docker builds fail with "bad interpreter".
+* text=auto
+*.sh text eol=lf
+*.py text eol=lf
+Dockerfile text eol=lf
+*.bat text eol=crlf
+*.png binary
+*.jpg binary
+*.mp4 binary
+*.pdf binary
+*.docx binary

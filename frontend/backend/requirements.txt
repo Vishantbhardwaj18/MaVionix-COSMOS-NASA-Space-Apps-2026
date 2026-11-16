@@ -1,0 +1,10 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic-settings>=2.4
+httpx>=0.27
+numpy>=1.26
+scipy>=1.13
+astropy>=6.1
+photutils>=1.13
+pillow>=10.3
+pytest>=8.2

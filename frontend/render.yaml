@@ -1,0 +1,26 @@
+# Render blueprint: New > Blueprint > pick this repository. Creates the API and the website.
+services:
+  - type: web
+    name: cosmos-api
+    runtime: docker
+    rootDir: backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: COSMOS_MODE
+        value: live
+      - key: COSMOS_ALLOW_SYNTHETIC_FALLBACK
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "1"
+  - type: web
+    name: cosmos-web
+    runtime: docker
+    rootDir: frontend
+    envVars:
+      - key: COSMOS_API_URL
+        fromService:
+          type: web
+          name: cosmos-api
+          property: hostport        # internal address; the site adds http:// itself
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false

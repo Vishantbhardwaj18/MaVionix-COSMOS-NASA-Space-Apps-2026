@@ -1,0 +1,49 @@
+{
+<<<<<<< HEAD
+  "name": "mavionix-cosmos-web",
+  "version": "1.2.0",
+=======
+  "name": "frontend",
+  "version": "0.1.0",
+>>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+<<<<<<< HEAD
+    "lint": "eslint",
+    "build:sky": "node scripts/fetch-sky-data.mjs",
+    "typecheck": "tsc --noEmit"
+=======
+    "lint": "eslint"
+>>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
+  },
+  "dependencies": {
+    "@fontsource-variable/ibm-plex-sans": "^5.3.0",
+    "@fontsource/spectral": "^5.3.0",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+<<<<<<< HEAD
+    "recharts": "^3.10.1",
+    "three": "^0.187.0"
+=======
+    "recharts": "^3.10.1"
+>>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+<<<<<<< HEAD
+    "@types/three": "^0.187.0",
+=======
+>>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,202 @@
+@import "tailwindcss";
+@import "@fontsource/spectral/400.css";
+@import "@fontsource/spectral/500.css";
+@import "@fontsource/spectral/400-italic.css";
+@import "@fontsource-variable/ibm-plex-sans";
+
+:root {
+  --field: #111b30;
+  --panel: #172339;
+  --panel-2: #1d2b45;
+  --rule: #2a3a58;
+  --rule-soft: #22304c;
+  --ink: #efe7d3;
+  --ink-2: #a3aec6;
+  --ink-3: #8b97b2;   /* 5:1 on the panel tone, so small notes stay readable */
+  --accent: #f2b544;
+  --accent-ink: #1a1405;
+  --red: #e06c5c;
+  --green: #7cc48f;
+  --serif: "Spectral", "Iowan Old Style", Georgia, serif;
+  --sans: "IBM Plex Sans Variable", "IBM Plex Sans", system-ui, sans-serif;
+}
+
+html { color-scheme: dark; }
+html, body { background: var(--field); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+body { font-variant-numeric: tabular-nums; background: transparent; } /* lets the fixed SpaceBackground canvas show through; html keeps --field */
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 500; letter-spacing: -0.005em; line-height: 1.15; }
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.3rem; }
+h3 { font-size: 1.05rem; }
+.lede { font-family: var(--serif); font-size: 1.08rem; color: var(--ink-2); max-width: 62ch; line-height: 1.55; }
+.measure { max-width: 68ch; }
+
+/* panels: hierarchy by radius and tone, not by shadow */
+.panel { background: var(--panel); border: 1px solid var(--rule-soft); border-radius: 4px; }
+.panel-2 { background: var(--panel-2); border: 1px solid var(--rule); border-radius: 3px; }
+.rule { border-top: 1px solid var(--rule-soft); }
+
+/* controls */
+.btn, .seg button { font: inherit; font-size: 0.86rem; padding: 0.38rem 0.75rem; border-radius: 3px; border: 1px solid var(--rule); background: var(--panel-2); color: var(--ink); cursor: pointer; }
+.btn:hover, .seg button:hover { border-color: var(--ink-3); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-quiet { background: transparent; border-color: transparent; color: var(--ink-2); }
+.btn-quiet:hover { color: var(--ink); background: var(--panel-2); }
+.seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; display: inline-flex; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.seg button { white-space: nowrap; flex-shrink: 0; border: 0; border-right: 1px solid var(--rule); border-radius: 0; background: transparent; color: var(--ink-2); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.input { font: inherit; width: 100%; padding: 0.45rem 0.7rem; border-radius: 3px; border: 1px solid var(--rule); background: var(--field); color: var(--ink); }
+.input::placeholder { color: var(--ink-3); }
+:is(.input, .btn, .seg button, input[type="range"], a, button):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+input[type="range"] { accent-color: var(--accent); width: 100%; }
+input[type="checkbox"] { accent-color: var(--accent); }
+
+/* status marks: meaning carried by words plus one colour */
+.mark { white-space: nowrap; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; padding: 0.15rem 0.55rem; border-radius: 3px; border: 1px solid; }
+.mark::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.mark-real { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, transparent); }
+.mark-synthetic { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.mark-known { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, transparent); }
+.mark-unmatched { color: var(--ink-2); border-color: var(--rule); }
+.mark-warn { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, transparent); }
+
+/* key/value readouts */
+.kv { display: grid; grid-template-columns: max-content 1fr; column-gap: 0.9rem; row-gap: 0.2rem; font-size: 0.86rem; }
+.kv dt { color: var(--ink-3); }
+.kv dd { color: var(--ink); overflow-wrap: anywhere; }
+.num { font-variant-numeric: tabular-nums; }
+.small { font-size: 0.82rem; color: var(--ink-2); }
+.note { font-size: 0.82rem; color: var(--ink-3); }
+.warn-text { color: var(--red); }
+.kbd { font-size: 0.72rem; padding: 0.05rem 0.35rem; border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 3px; color: var(--ink-2); }
+
+.pix { image-rendering: pixelated; }
+a.link { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
+table.data { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+table.data th { text-align: left; font-weight: 500; color: var(--ink-3); padding: 0.25rem 0.5rem 0.25rem 0; border-bottom: 1px solid var(--rule); }
+table.data td { padding: 0.3rem 0.5rem 0.3rem 0; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+table.data tr:last-child td { border-bottom: 0; }
+
+/* header: one row on wide screens; brand + nav, then search, on narrow ones */
+.site-header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "brand search nav"; align-items: center; column-gap: 1rem; row-gap: 0.5rem; }
+.site-brand { grid-area: brand; min-width: 0; }
+.site-search { grid-area: search; min-width: 0; }
+.site-nav { grid-area: nav; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.site-nav::-webkit-scrollbar { display: none; }
+@media (max-width: 1023px) {
+  .site-header { grid-template-columns: minmax(0, 1fr); grid-template-areas: "brand" "search" "nav"; }
+  .site-brand { justify-content: space-between; }
+  .site-search > div { max-width: none; }
+  .site-nav { margin: 0 -0.5rem; }
+}
+
+/* archive status: a word and a dot, never colour alone */
+.status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--ink-2); white-space: nowrap; cursor: help; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
+.status-ok .status-dot { background: var(--green); }
+.status-warn .status-dot { background: var(--accent); }
+.status-bad .status-dot { background: var(--red); }
+.status-bad { color: var(--red); }
+
+/* the decorative sky sits behind everything; quieter on phones, where text runs across it */
+.sky-bg { opacity: 0.9; }
+@media (max-width: 1023px) { .sky-bg { opacity: 0.5; } }
+
+.skip-link { position: absolute; left: 0.5rem; top: -4rem; z-index: 100; padding: 0.5rem 0.8rem; background: var(--accent); color: var(--accent-ink); border-radius: 3px; font-weight: 600; }
+.skip-link:focus { top: 0.5rem; }
+
+/* tables that are wider than a phone scroll inside their own box */
+.scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* long text laid over the star field gets a quiet backing so stars never sit behind words */
+.reading { background: color-mix(in srgb, var(--field) 84%, transparent); border: 1px solid var(--rule-soft); border-radius: 4px; padding: 1.25rem 1.5rem; }
+@media (max-width: 640px) { .reading { padding: 1rem; } }
+
+/* a card for "this failed, here is what to do" */
+.callout { border: 1px solid color-mix(in srgb, var(--red) 45%, transparent); background: color-mix(in srgb, var(--red) 8%, var(--panel)); border-radius: 4px; padding: 0.9rem 1rem; }
+
+/* How it works: the story on the left, the mathematics on the right */
+.about-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+@media (min-width: 1180px) { .about-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.math-block { border-top: 1px solid var(--rule-soft); padding-top: 1rem; scroll-margin-top: 5rem; }
+.math-block h3 { display: flex; align-items: baseline; gap: 0.6rem; }
+.math-n { font-family: var(--sans); font-size: 0.72rem; font-weight: 600; color: var(--accent-ink); background: var(--accent); border-radius: 3px; padding: 0.05rem 0.4rem; position: relative; top: -0.1rem; }
+.eq { margin: 0.6rem 0; padding: 0.7rem 0.9rem; background: color-mix(in srgb, var(--panel-2) 70%, transparent); border-left: 2px solid var(--accent); border-radius: 0 3px 3px 0; color: var(--ink); }
+.eq .katex-display { margin: 0; text-align: left; }
+.eq .katex-display > .katex { text-align: left; }
+.katex { font-size: 1.04em; }
+.derive { margin-top: 0.5rem; border: 1px solid var(--rule-soft); border-radius: 3px; }
+.derive > summary { cursor: pointer; padding: 0.35rem 0.7rem; font-size: 0.82rem; color: var(--accent); list-style: none; display: flex; align-items: center; gap: 0.45rem; transition: background-color 0.16s ease; }
+.derive > summary::-webkit-details-marker { display: none; }
+.derive > summary::before { content: "+"; display: inline-block; width: 0.8rem; font-weight: 600; transition: transform 0.2s var(--ease); }
+.derive[open] > summary::before { transform: rotate(45deg); }
+.derive > summary:hover { background: color-mix(in srgb, var(--panel-2) 60%, transparent); }
+.derive-body { padding: 0.1rem 0.8rem 0.7rem; border-top: 1px solid var(--rule-soft); animation: drop 0.22s var(--ease) backwards; }
+.derive > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ------------------------------------------------------------------ motion
+   Motion here answers something: arriving on a page, pressing a control, waiting for data.
+   Blinking between two visits is a hard cut on purpose, because that is the measurement. */
+:root { --ease: cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes drop { from { opacity: 0; transform: translateY(-6px) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes slide-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@keyframes travel { from { transform: translateX(-100%); } to { transform: translateX(350%); } }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 55%, transparent); } 70%, 100% { box-shadow: 0 0 0 7px transparent; } }
+@keyframes toast { 0% { opacity: 0; transform: translate(-50%, 10px); } 12%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, 6px); } }
+
+/* "backwards", not "both": once finished, the animation must stop applying a transform, or fixed
+   elements inside (the toast) would be positioned against the page instead of the window */
+.page-enter { animation: rise 0.42s var(--ease) backwards; }
+.appear { animation: drop 0.2s var(--ease) backwards; }
+.slide-in { animation: slide-in 0.26s var(--ease) backwards; }
+.fade-in { animation: fade 0.5s ease backwards; }
+/* the start page arrives in order: words, then the list, then the live preview, then the globe */
+.stagger > * { animation: rise 0.55s var(--ease) backwards; }
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.14s; }
+.stagger > *:nth-child(3) { animation-delay: 0.24s; }
+.stagger > *:nth-child(4) { animation-delay: 0.34s; }
+
+/* controls respond to the hand */
+.btn, .seg button, .input, .nav-link, a.link, table.data tbody tr, .visit-row { transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.12s ease, box-shadow 0.16s ease, filter 0.16s ease; }
+.btn:active:not(:disabled), .seg button:active { transform: translateY(1px) scale(0.985); }
+.btn-primary:hover:not(:disabled) { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); outline: none; }
+a.link { text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+a.link:hover { text-decoration-color: var(--accent); text-underline-offset: 3px; }
+table.data tbody tr:hover td { background: color-mix(in srgb, var(--panel-2) 55%, transparent); }
+.visit-row:hover { background: color-mix(in srgb, var(--panel-2) 70%, transparent); }
+input[type="range"] { cursor: pointer; transition: filter 0.16s ease; }
+input[type="range"]:hover { filter: brightness(1.15); }
+
+/* navigation: one underline slides to the page you are on */
+.nav-bar { position: absolute; left: 0; bottom: 0; height: 2px; border-radius: 2px; background: var(--accent); transition: transform 0.34s var(--ease), width 0.34s var(--ease); pointer-events: none; }
+
+/* the header stays in reach on wide screens and lifts off the page once you scroll */
+@media (min-width: 1024px) {
+  .site-top { position: sticky; top: 0; z-index: 30; transition: box-shadow 0.25s ease; }
+  html[data-scrolled="1"] .site-top { box-shadow: 0 6px 18px -8px rgba(3, 7, 16, 0.9); }
+}
+
+/* waiting: the shape of what is coming, and a bar that says work is under way */
+.skeleton { border-radius: 3px; background: linear-gradient(100deg, var(--panel-2) 30%, color-mix(in srgb, var(--panel-2) 60%, var(--rule)) 50%, var(--panel-2) 70%); background-size: 200% 100%; animation: shimmer 1.6s linear infinite; }
+.progress { position: relative; height: 2px; overflow: hidden; background: var(--rule-soft); border-radius: 2px; }
+.progress::after { content: ""; position: absolute; inset: 0; width: 30%; background: var(--accent); border-radius: 2px; animation: travel 1.4s var(--ease) infinite; }
+
+.status-ok .status-dot { animation: ping 2.8s ease-out infinite; }
+
+.toast { position: fixed; left: 50%; bottom: 1.5rem; z-index: 60; padding: 0.5rem 0.9rem; border-radius: 4px; background: var(--ink); color: var(--field); font-size: 0.86rem; font-weight: 500; box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.7); animation: toast 1.9s var(--ease) both; pointer-events: none; }
+
+.event-badge { border-radius: 6px; display: block; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }

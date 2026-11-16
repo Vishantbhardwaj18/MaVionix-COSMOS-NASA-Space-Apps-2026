@@ -1,0 +1,24 @@
+# docker compose up --build        -> http://localhost:3000
+# COSMOS_MODE=demo docker compose up --build   -> offline sample mode
+services:
+  api:
+    build: ./backend
+    environment:
+      COSMOS_MODE: ${COSMOS_MODE:-live}
+      COSMOS_ALLOW_SYNTHETIC_FALLBACK: ${COSMOS_ALLOW_SYNTHETIC_FALLBACK:-true}
+      COSMOS_RATE_LIMIT_PER_MIN: ${COSMOS_RATE_LIMIT_PER_MIN:-120}
+      COSMOS_CACHE_DIR: /cache
+    volumes: ["cosmos-cache:/cache"]
+    ports: ["8000:8000"]          # optional: exposes the API docs at http://localhost:8000/docs
+    restart: unless-stopped
+  web:
+    build: ./frontend
+    environment:
+      COSMOS_API_URL: http://api:8000     # the site proxies /api to the API over the internal network
+    ports: ["3000:3000"]
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  cosmos-cache:
