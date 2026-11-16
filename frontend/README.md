@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # COSMOS: SPHEREx sky, over time
 
 A public web viewer for NASA's SPHEREx infrared sky survey, built by MaVionix for the 2026 NASA
@@ -115,86 +114,10 @@ docs/       methods, datasets, architecture, testing, deployment, pitch, demo sc
 ```
 
 There is no database. Cutouts are cached on disk and JPL answers as JSON.
-=======
-# MaVionix COSMOS — SPHEREx Sky Time Machine
-
-**NASA Space Apps Challenge 2026 · Sonipat · Challenge: “Planet X and SPHEREx”**
-*Explore the Universe. Decode Cosmic Mysteries.*
-
-A public web tool that shows how NASA SPHEREx’s infrared sky changes over time — and goes
-three steps further: explainable moving-object detection with JPL identification, multi-epoch
-spectral fingerprints that exploit SPHEREx’s linear-variable filters, and an honest “could SPHEREx
-see Planet Nine?” calculator with measured completeness.
-
-| Page | What it does |
-|---|---|
-| **Viewer** | Coordinates or a name → every SPHEREx visit covering it (IRSA SIA + cutouts). Canvas viewer with zoom/pan, step / blink / swipe / difference, adjustable asinh stretch, live RA/Dec, surface brightness and *wavelength* under the cursor, overlays for JPL-known bodies and detected movers, keyboard control |
-| **Movers** | 5σ source extraction per epoch → cross-epoch linking → JPL SBIdent match → evidence cards, CSV report |
-| **Spectrum** | Forced photometry along a track across epochs/detectors → sparse 0.75–5 µm spectrum → indicative template comparison |
-| **Planet Nine** | Real TNO orbits (JPL SBDB), the clustering argument, reflected-light brightness vs SPHEREx depth, injection–recovery completeness |
-| **How it works** | Full processing chain, data citations, limitations, what we do *not* claim |
-
-> **Scientific-integrity statement.** This tool never claims to have found Planet X. Tracks that
-> do not match a JPL ephemeris are labelled *unmatched*, not *new*. Synthetic data (offline demo
-> and tests) is always badged **SYNTHETIC DATA — NOT SPHEREx**.
-
----
-
-## Architecture
-
-```
-frontend/  Next.js 16 · TypeScript · Tailwind 4 · Recharts · self-hosted Spectral + IBM Plex Sans
-           components/SkyCanvas.tsx  canvas renderer: 16-bit pixels → asinh LUT, TAN WCS cursor readout,
-                                     reprojection-free swipe/blink, markers; lib/wcs.ts gnomonic maths
-backend/   FastAPI · Astropy · photutils · NumPy/SciPy · httpx
-           app/core/irsa.py      IRSA SIAv2 query + IBE cutouts (cached on disk)
-           app/core/fits_tools.py SPHEREx MEF reader (IMAGE/FLAGS/VARIANCE/ZODI/WCS-WAVE)
-           app/core/render.py    asinh stretch, WCS reprojection, difference imaging
-           app/science/movers.py detection · linking · evidence · parallax distance hint
-           app/science/jpl.py    SBIdent (known bodies) · SBDB (TNO elements)
-           app/science/spectrum.py forced photometry · templates
-           app/science/detectability.py Planet-Nine brightness · injection–recovery
-           app/data/synthetic.py labelled synthetic MEFs for offline demo/tests
-docs/      DATASETS · METHODOLOGY · ARCHITECTURE · TESTING · DEPLOYMENT · PITCH · DEMO_SCRIPT · INNOVATION
-```
-
-No database is required for the hackathon build: epochs and cutouts are cached on disk
-(`COSMOS_CACHE_DIR`), JPL results are cached as JSON. See `docs/ARCHITECTURE.md` for the optional
-PostgreSQL schema if you want persistent candidate storage.
-
-## Quick start (local)
-
-```bash
-# 1. Backend
-cd backend
-python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-python scripts/verify_irsa.py 270 66.56               # live data checks — run this first
-uvicorn app.main:app --reload --port 8000             # http://localhost:8000/docs
-
-# 2. Frontend (new terminal)
-cd frontend
-npm install
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
-npm run dev                                           # http://localhost:3000
-```
-
-Offline / no-internet demo: `COSMOS_MODE=demo uvicorn app.main:app --port 8000` (everything is
-badged synthetic). In `live` mode the API falls back to synthetic data **only** if IRSA returns
-nothing and `COSMOS_ALLOW_SYNTHETIC_FALLBACK=true` (default); set it to `false` for judging if you
-want hard failures instead.
-
-## Docker
-
-```bash
-docker compose up --build        # web on :3000, api on :8000
-```
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 ## Tests
 
 ```bash
-<<<<<<< HEAD
 cd backend && python -m pytest -q                         # 21 tests, no network needed
 cd frontend && npm run typecheck && npm run lint && npm run build
 ./run.sh demo & python tests/e2e_smoke.py                 # browser test; needs playwright
@@ -250,34 +173,5 @@ by a documented algorithm in `backend/app/data/synthetic.py`.
 ## Licence
 
 Code: MIT, see `LICENSE`. Data remain under their providers' terms.
-=======
-cd backend && pytest -q          # 13 tests, fully offline (synthetic MEFs)
-cd frontend && npm run build     # type-check + production build
-```
-
-## Configuration (`backend/.env.example`)
-
-| Variable | Default | Meaning |
-|---|---|---|
-| `COSMOS_MODE` | `live` | `live` or `demo` |
-| `COSMOS_SPHEREX_COLLECTIONS` | `spherex_qr3,spherex_dr1` | IRSA SIA collection names, searched in order |
-| `COSMOS_IRSA_SIA_URL` | `https://irsa.ipac.caltech.edu/SIA` | SIAv2 endpoint |
-| `COSMOS_CUTOUT_SIZE_ARCSEC` | `600` | cutout width (≈98 px) |
-| `COSMOS_SURVEY_DEPTH_AB` | `19.0` | approximate per-channel 5σ depth used in the detectability panel |
-| `COSMOS_CORS_ORIGINS` | `http://localhost:3000` | comma-separated |
-
-## Data credits
-
-SPHEREx data: NASA/JPL-Caltech/IPAC, served by the NASA/IPAC Infrared Science Archive (QR3 DOI
-10.26131/IRSA662, DR1 DOI 10.26131/IRSA678). Small-body data: JPL Solar System Dynamics.
-“This product makes use of data from the Spectro-Photometer for the History of the Universe, Epoch
-of Reionization and Ices Explorer (SPHEREx), which is a joint project of the Jet Propulsion
-Laboratory and the California Institute of Technology, and is funded by NASA.”
-
-## Team
-
-MaVionix (mavionix.in) — Sonipat local event, 2026 NASA International Space Apps Challenge.
-License: MIT (code). Data remain under their providers’ terms.
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 #   N a s a - S p a c e - C h a l l e n g e - 2 0 2 6 - M a V i o n i x - C o s m o s - F i n a l  
  

@@ -47,11 +47,7 @@ def planet_brightness(mass_earth: float = 7.0, radius_earth: float | None = None
         "notes": [
             "Reflected-light estimate at opposition, phase angle 0; thermal emission negligible at <5 µm for ~40 K.",
             "SPHEREx depth is an approximate per-channel 5-sigma value; coadding channels/epochs helps by ~1-2 mag.",
-<<<<<<< HEAD
             "Brown & Batygin (2021) predict V of about 22 to 25 for most of the allowed orbits. Searches of ZTF, DES and Pan-STARRS data together rule out about 78% of them (Brown, Holman & Batygin 2024).",
-=======
-            "Brown & Batygin (2021) predict V ~ 22-25 for most of the parameter space; Pan-STARRS/ZTF/DES already exclude ~78% of it.",
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
         ],
     }
 

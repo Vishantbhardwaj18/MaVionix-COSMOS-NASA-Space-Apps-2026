@@ -43,11 +43,8 @@ class Settings(BaseSettings):
     allow_synthetic_fallback: bool = True
     cache_dir: str = "/tmp/cosmos-cache"
     cors_origins: str = "http://localhost:3000"
-<<<<<<< HEAD
     # Requests per client per minute on the data endpoints (0 disables the limit).
     rate_limit_per_min: int = 120
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 
 settings = Settings()

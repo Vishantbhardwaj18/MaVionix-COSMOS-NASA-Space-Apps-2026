@@ -8,7 +8,6 @@ import { api, SpectrumResponse } from "@/lib/api";
 
 const BANDS = [[0.75, 1.09], [1.10, 1.62], [1.63, 2.41], [2.42, 3.82], [3.83, 4.41], [4.42, 5.00]];
 
-<<<<<<< HEAD
 const tidy = (v: string | null) => (v && Number.isFinite(Number(v)) ? String(Number(Number(v).toFixed(5))) : v ?? "");
 
 export default function Spectrum() {
@@ -16,13 +15,6 @@ export default function Spectrum() {
   const sp = useSearchParams();
   const [raSrc, setRaSrc] = useState(tidy(sp.get("ra_src")));
   const [decSrc, setDecSrc] = useState(tidy(sp.get("dec_src")));
-=======
-export default function Spectrum() {
-  const q = useFieldQuery();
-  const sp = useSearchParams();
-  const [raSrc, setRaSrc] = useState(sp.get("ra_src") ?? "");
-  const [decSrc, setDecSrc] = useState(sp.get("dec_src") ?? "");
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   const track = sp.get("track") ?? undefined;
   const [data, setData] = useState<SpectrumResponse | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -36,7 +28,6 @@ export default function Spectrum() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(run, [q.ra, q.dec, q.target, q.synthetic, track]);
 
-<<<<<<< HEAD
   // Say plainly when the comparison means little: few points, or a poor fit even for the best shape.
   const chi = Object.values(data?.classification.chi2_reduced ?? {});
   const bestChi = chi.length ? Math.min(...chi) : null;
@@ -47,8 +38,6 @@ export default function Spectrum() {
       ? { fits: false, why: `None of the shapes fits well (best reduced χ² ${bestChi.toFixed(1)}).` }
       : { fits: true, why: "" };
 
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   const pts = (data?.points ?? []).filter((p) => p.wavelength_um !== null && p.flux_jy > 0).map((p) => ({
     x: p.wavelength_um as number, y: p.flux_jy * 1e3, err: p.flux_err_jy * 1e3, det: p.detector,
   }));
@@ -68,19 +57,11 @@ export default function Spectrum() {
       </div>
       {track && <p className="note">Following the moving object’s track: the aperture is placed at a different position in each visit.</p>}
       {!hasField(q) && <p className="small">Choose a field first — <Link className="link" href="/">open the viewer</Link>, or pick a track on the Movers page and it will bring you here with the positions filled in.</p>}
-<<<<<<< HEAD
       {loading && <p className="small" role="status">Placing an aperture in each visit and summing the light…</p>}
       {err && <div className="callout max-w-2xl" role="alert"><p>The spectrum could not be measured</p><p className="small mt-1">{err}</p></div>}
 
       {data && (
         <div className="grid gap-3 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_340px]">
-=======
-      {loading && <p className="small">Placing an aperture in each visit and summing the light…</p>}
-      {err && <p className="small warn-text">{err}</p>}
-
-      {data && (
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_340px]">
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
           <div className="panel p-3 h-[440px]">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 12, right: 16, bottom: 28, left: 8 }}>
@@ -97,19 +78,12 @@ export default function Spectrum() {
           </div>
           <aside className="panel p-3 flex flex-col gap-3">
             <div>
-<<<<<<< HEAD
               <h3>Closest simple shape</h3>
               {data.classification.best ? (
                 <>
                   {verdict.fits
                     ? <p className="mt-1">{data.classification.best}</p>
                     : <p className="mt-1 small">{verdict.why} The least bad is “{data.classification.best}”.</p>}
-=======
-              <h3>Closest simple template</h3>
-              {data.classification.best ? (
-                <>
-                  <p className="mt-1">{data.classification.best}</p>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
                   <table className="data mt-2"><tbody>
                     {Object.entries(data.classification.chi2_reduced ?? {}).sort((a, b) => a[1] - b[1]).map(([k, v]) => <tr key={k} className="num"><td>{k}</td><td className="text-right">χ²ᵣ {v.toFixed(2)}</td></tr>)}
                   </tbody></table>
@@ -119,17 +93,10 @@ export default function Spectrum() {
             </div>
             <div>
               <h3>Measurements</h3>
-<<<<<<< HEAD
               <div className="scroll-x"><table className="data mt-1">
                 <thead><tr><th>µm</th><th>Det</th><th>mJy</th><th>AB</th><th>SNR</th></tr></thead>
                 <tbody>{data.points.map((p, k) => <tr key={k} className="num"><td>{p.wavelength_um?.toFixed(2)}</td><td>{p.detector}</td><td>{(p.flux_jy * 1e3).toFixed(2)}</td><td>{p.ab_mag?.toFixed(2) ?? "—"}</td><td>{p.snr?.toFixed(1)}</td></tr>)}</tbody>
               </table></div>
-=======
-              <table className="data mt-1">
-                <thead><tr><th>µm</th><th>Det</th><th>mJy</th><th>AB</th><th>SNR</th></tr></thead>
-                <tbody>{data.points.map((p, k) => <tr key={k} className="num"><td>{p.wavelength_um?.toFixed(2)}</td><td>{p.detector}</td><td>{(p.flux_jy * 1e3).toFixed(2)}</td><td>{p.ab_mag?.toFixed(2) ?? "—"}</td><td>{p.snr?.toFixed(1)}</td></tr>)}</tbody>
-              </table>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
               <p className="note mt-2">Aperture radius 2.5 px with a sky annulus; flux is the aperture sum times the pixel solid angle (6.15″)². Zodiacal model subtracted. No aperture correction, so treat values as relative.</p>
             </div>
           </aside>

@@ -1,6 +1,5 @@
 # COSMOS: SPHEREx sky, over time
 
-<<<<<<< HEAD
 **MaVionix · NASA Space Apps Challenge 2026 · Sonipat · Challenge: "Planet X and SPHEREx"**
 
 *Explore the Universe. Decode Cosmic Mysteries.*
@@ -14,8 +13,6 @@
 
 </div>
 
-=======
->>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 A public web viewer for NASA's SPHEREx infrared sky survey, built by MaVionix for the 2026 NASA
 Space Apps Challenge, "Planet X and SPHEREx". 
 
@@ -27,7 +24,6 @@ Planet Nine.
 
 ![The viewer](docs/screenshots/viewer.png)
 
-<<<<<<< HEAD
 ![The COSMOS viewer: every visit of a field, with live RA/Dec, brightness and wavelength under the cursor](docs/screenshots/laptop/02-viewer.png)
 
 > **Scientific-integrity statement. What this tool does not claim.** It has not found Planet X and
@@ -89,28 +85,20 @@ direction (things that move):
 All captured at 1440×900 in sample mode.
 
 | Start page | Sky globe |
-=======
-| | |
->>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 |---|---|
 | ![Sky globe](docs/screenshots/globe.png) | ![Image as a 3D surface](docs/screenshots/viewer-surface.png) |
 | ![Outer Solar System in 3D](docs/screenshots/planet-nine.png) | ![Measuring one source in every visit](docs/screenshots/viewer-measure.png) |
 
-<<<<<<< HEAD
 | Viewer: measure a source in every visit | Difference two visits |
 |---|---|
 | ![Measuring one source in every visit](docs/screenshots/laptop/viewer-measure.png) | ![Difference image of two visits](docs/screenshots/laptop/03-difference.png) |
 | Click a star to see its brightness, wavelength and SNR in each visit. | Red is brighter in B, blue is brighter in A. A warning appears when the two wavelengths differ. |
-=======
-All screenshots here were taken in sample mode, so they carry the "Synthetic sample" badge.
->>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 > **What this tool does not claim.** It has not found Planet X and says so on every page. A track
 > that matches no catalogued body is labelled *unmatched*, never *new*. When the archive cannot be
 > reached, the site shows a generated test field that is labelled "Synthetic sample, not SPHEREx
 > data" on screen, in exported images and in the CSV.
 
-<<<<<<< HEAD
 | Spectrum from repeat visits | Planet Nine in 3D |
 |---|---|
 | ![Spectrum page](docs/screenshots/laptop/06-spectrum.png) | ![Outer Solar System and Planet Nine](docs/screenshots/laptop/07-planet-nine.png) |
@@ -128,9 +116,6 @@ All screenshots here were taken in sample mode, so they carry the "Synthetic sam
 ---
 
 ## Quick start
-=======
-## Run it
->>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 You need Python 3.11 or newer and Node.js 20 or newer.
 
@@ -223,7 +208,6 @@ The background of every page is the real sky (Hipparcos and Tycho stars at their
 positions and colours), looking at a different region on each page. The foot of the page says
 which. The 3D views need WebGL; where it is missing the site shows the flat equivalents.
 
-<<<<<<< HEAD
 **Keyboard in the viewer:** `←` `→` change visit A, `[` `]` change visit B, `space` plays or
 pauses, `1` to `6` switch mode, `i` inverts, `+` `-` `0` zoom and fit.
 
@@ -246,9 +230,6 @@ equivalents.
 ## Architecture
 
 ![COSMOS architecture](docs/screenshots/laptop/architecture.svg)
-=======
-## How it is put together
->>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 ```
 frontend/   Next.js 16, React 19, TypeScript, Tailwind 4, Recharts, three.js
@@ -280,7 +261,6 @@ cd frontend && npm run typecheck && npm run lint && npm run build
 bash run.sh demo & python tests/e2e_smoke.py                 # browser test; needs playwright
 ```
 
-<<<<<<< HEAD
 - The browser never calls the API host directly. `frontend/src/app/api/[...path]/route.ts`
   forwards the request and reads `COSMOS_API_URL` at run time, so one built image works on any host.
 - `core/service.py` holds one lock per field, so two simultaneous requests for the same field cause
@@ -849,14 +829,6 @@ serves and where it sits among existing tools. It contains no sales or market-si
 | Vercel website, API elsewhere | see [Deployment](#deployment) | Docker service for the API on Render, Railway, Fly or a VM. |
 
 ---
-=======
-The backend tests cover the FITS reader, reprojection, mover detection on a field with a known
-injected mover, photometry, the Planet Nine estimate, every API route, rate limiting, and the live
-code path run against a stand-in archive (partial failure, outage, fallback and recovery), and the
-awkward cases real data brings: cutouts padded with empty pixels, forty visits of one field, blank
-cells in the archive's answer, and malformed requests. See
-`docs/TESTING.md`. GitHub Actions runs the backend and frontend checks on every push.
->>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 ## Settings
 
@@ -904,7 +876,6 @@ tested the result. No images, audio or video in the application are AI-help take
 and 3D views(frontend) are drawn in the browser from catalogue data, and the offline sample field is produced
 by a documented algorithm in `backend/app/data/synthetic.py`.
 
-<<<<<<< HEAD
 ---
 
 ## Known gaps and roadmap
@@ -936,8 +907,5 @@ by a documented algorithm in `backend/app/data/synthetic.py`.
 - Optional PostgreSQL persistence for candidate curation (schema above).
 
 ## Licence and team
-=======
-## Licence
->>>>>>> edef0b0 (Resolve merge conflicts and fix frontend build)
 
 Code: MIT, see `LICENSE`. Data remain under their providers' terms.

@@ -1,10 +1,6 @@
 export default function About() {
   return (
-<<<<<<< HEAD
     <article className="reading max-w-[78ch] flex flex-col gap-6 my-2">
-=======
-    <article className="max-w-[72ch] flex flex-col gap-6 py-2">
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
       <div>
         <h1>How this works</h1>
         <p className="lede mt-2">Built for the 2026 NASA Space Apps challenge “Planet X and SPHEREx”: show SPHEREx images of any spot on the sky and make it easy to see how they change between visits. Everything on the site traces back to a public NASA or JPL product and a stated calculation.</p>
@@ -54,7 +50,6 @@ export default function About() {
         </ul>
       </section>
 
-<<<<<<< HEAD
       <section>
         <h2>The 3D views and the sky behind the pages</h2>
         <p className="small mt-1">Three views are drawn in three dimensions because the third dimension carries information. The globe on the start page shows why SPHEREx’s deep fields sit at the ecliptic poles. The surface view in the viewer turns brightness into height, which separates a star (a rounded peak) from a cosmic-ray hit (a one-pixel spike). The orbit view on the Planet Nine page shows the tilt of each distant orbit, which a flat drawing hides; the planets in it are placed with JPL’s published approximate orbital elements, and the single proposed orbit is the maximum-likelihood model of Brown and Batygin (2021), drawn as a hypothesis.</p>
@@ -77,9 +72,6 @@ export default function About() {
       </section>
 
       <p className="note">Source code, tests and the full methodology are in the project repository. MaVionix, November 2026.</p>
-=======
-      <p className="note">Source code, tests and the full methodology are in the project repository. MaVionix, Sonipat, November 2026.</p>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     </article>
   );
 }

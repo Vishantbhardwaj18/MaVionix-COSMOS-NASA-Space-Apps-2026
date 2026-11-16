@@ -25,17 +25,13 @@ export default function FieldSearch() {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [showcase, setShowcase] = useState<{ name: string; ra: number; dec: number; why: string }[]>([]);
-<<<<<<< HEAD
   const [problem, setProblem] = useState<string | null>(null);
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setText(q.target ?? (q.ra !== undefined ? `${q.ra}, ${q.dec}` : "")); }, [q.target, q.ra, q.dec]);
   useEffect(() => { api.showcase().then((r) => setShowcase(r.fields)).catch(() => {}); }, []);
   useEffect(() => {
     const h = (e: MouseEvent) => { if (!box.current?.contains(e.target as Node)) setOpen(false); };
-<<<<<<< HEAD
     const k = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("mousedown", h); document.addEventListener("keydown", k);
     return () => { document.removeEventListener("mousedown", h); document.removeEventListener("keydown", k); };
@@ -47,13 +43,6 @@ export default function FieldSearch() {
       setProblem("RA must be between 0 and 360 degrees and Dec between -90 and +90."); return;
     }
     setProblem(null);
-=======
-    document.addEventListener("mousedown", h); return () => document.removeEventListener("mousedown", h);
-  }, []);
-
-  const go = (t: string, synthetic = q.synthetic) => {
-    const m = t.trim().match(/^(-?\d+(?:\.\d+)?)\s*[, ]\s*(-?\d+(?:\.\d+)?)$/);
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     const next: FieldQuery = m ? { ra: Number(m[1]), dec: Number(m[2]), synthetic } : { target: t.trim(), synthetic };
     if (!hasField(next)) return;
     try { localStorage.setItem("cosmos:last-field", JSON.stringify(next)); } catch { /* ignore */ }
@@ -63,7 +52,6 @@ export default function FieldSearch() {
   };
 
   return (
-<<<<<<< HEAD
     <div ref={box} className="relative w-full max-w-xl">
       <form role="search" className="flex gap-2" onSubmit={(e) => { e.preventDefault(); go(text); }}>
         <input className="input" value={text} onChange={(e) => setText(e.target.value)} onFocus={() => setOpen(true)}
@@ -72,15 +60,6 @@ export default function FieldSearch() {
       </form>
       {problem && <p className="absolute left-0 top-full mt-1 small warn-text panel px-2 py-1 z-40" role="alert">{problem}</p>}
       {open && !problem && (
-=======
-    <div ref={box} className="relative flex-1 max-w-xl">
-      <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); go(text); }}>
-        <input className="input" value={text} onChange={(e) => setText(e.target.value)} onFocus={() => setOpen(true)}
-          placeholder="Sky position: 270, 66.56 — or a name like Makemake" aria-label="Sky position or object name" />
-        <button className="btn btn-primary whitespace-nowrap" type="submit">Look up</button>
-      </form>
-      {open && (
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
         <div className="panel absolute left-0 right-0 top-full mt-1 p-2 z-30 text-sm">
           <p className="note px-2 pb-1">Fields with many SPHEREx visits</p>
           {showcase.map((f) => (

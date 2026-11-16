@@ -1,6 +1,5 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-<<<<<<< HEAD
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Provenance, fieldParams, hasField, useFieldQuery } from "@/components/FieldPicker";
@@ -27,18 +26,6 @@ export default function Viewer() {
   // The link carries the view (visits and mode) as well as the field, so a shared link opens on the same thing.
   const want = useRef({ a: Number(sp.get("a") ?? 0), b: Number(sp.get("b") ?? 1), mode: sp.get("mode") as ViewMode | null, overlay: sp.get("overlay") });
   const [copied, setCopied] = useState(false);
-=======
-import Link from "next/link";
-import { Provenance, fieldParams, hasField, useFieldQuery } from "@/components/FieldPicker";
-import SkyCanvas, { Cursor, Marker, Stretch, ViewMode } from "@/components/SkyCanvas";
-import { api, Candidate, DiffResponse, EpochsResponse, Frame, mjdToDate } from "@/lib/api";
-import { fmtDec, fmtRA } from "@/lib/wcs";
-
-const DEFAULT_STRETCH: Stretch = { black: 0.0, white: 0.6, a: 0.08, invert: false };
-
-export default function Viewer() {
-  const q = useFieldQuery();
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   const [data, setData] = useState<EpochsResponse | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -46,12 +33,8 @@ export default function Viewer() {
   const [b, setB] = useState(1);
   const [mode, setMode] = useState<ViewMode>("step");
   const [showB, setShowB] = useState(false);
-<<<<<<< HEAD
   // People who ask their system for less motion get a paused blink they can start themselves.
   const [playing, setPlaying] = useState(() => typeof window === "undefined" || !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-=======
-  const [playing, setPlaying] = useState(true);
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   const [blinkMs, setBlinkMs] = useState(700);
   const [swipe, setSwipe] = useState(0.5);
   const [diff, setDiff] = useState<DiffResponse | null>(null);
@@ -65,20 +48,16 @@ export default function Viewer() {
   const [showMovers, setShowMovers] = useState(false);
   const [moversBusy, setMoversBusy] = useState(false);
   const startedAt = useRef(0);
-<<<<<<< HEAD
   const [waited, setWaited] = useState(0);
   const [pick, setPick] = useState<Pick | null>(null);
   const [relief, setRelief] = useState(0.45);
   const [smooth, setSmooth] = useState(false);
   const [no3d, setNo3d] = useState(false);
   const [reload, setReload] = useState(0);
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
   // load epochs
   useEffect(() => {
     if (!hasField(q)) return;
-<<<<<<< HEAD
     setLoading(true); setErr(null); setData(null); setDiff(null); setMovers(null); setKnown({}); setShowMovers(false); setShowKnown(false); setPick(null);
     startedAt.current = Date.now();
     api.epochs(q).then((d) => {
@@ -122,21 +101,6 @@ export default function Viewer() {
     api.spectrum(q, ra, dec).then((res) => setPick((p) => (p && p.x === x && p.y === y ? { ...p, res } : p)))
       .catch((e) => setPick((p) => (p && p.x === x && p.y === y ? { ...p, err: String(e.message ?? e) } : p)));
   };
-=======
-    setLoading(true); setErr(null); setData(null); setDiff(null); setMovers(null); setKnown({}); setShowMovers(false); setShowKnown(false);
-    startedAt.current = Date.now();
-    api.epochs(q).then((d) => { setData(d); setA(0); setB(Math.min(1, d.frames.length - 1)); })
-      .catch((e) => setErr(String(e.message ?? e))).finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q.ra, q.dec, q.target, q.synthetic]);
-
-  // blink clock
-  useEffect(() => {
-    if (mode !== "blink" || !playing) return;
-    const t = window.setInterval(() => setShowB((s) => !s), blinkMs);
-    return () => window.clearInterval(t);
-  }, [mode, playing, blinkMs]);
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
   // difference image
   useEffect(() => {
@@ -174,13 +138,8 @@ export default function Viewer() {
     else if (e.key === "ArrowLeft") setA((v) => (v - 1 + n) % n);
     else if (e.key === "]") setB((v) => (v + 1) % n);
     else if (e.key === "[") setB((v) => (v - 1 + n) % n);
-<<<<<<< HEAD
     else if (e.key === " ") { e.preventDefault(); if (mode === "blink" || mode === "movie") setPlaying((p) => !p); else setMode("blink"); }
     else if (e.key >= "1" && e.key <= "6") setMode(MODES[Number(e.key) - 1]);
-=======
-    else if (e.key === " ") { e.preventDefault(); if (mode === "blink") setPlaying((p) => !p); else setMode("blink"); }
-    else if (e.key === "1") setMode("step"); else if (e.key === "2") setMode("blink"); else if (e.key === "3") setMode("swipe"); else if (e.key === "4") setMode("diff");
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     else if (e.key.toLowerCase() === "i") setStretch((s) => ({ ...s, invert: !s.invert }));
   }, [n, mode]);
   useEffect(() => { window.addEventListener("keydown", onKey); return () => window.removeEventListener("keydown", onKey); }, [onKey]);
@@ -188,10 +147,7 @@ export default function Viewer() {
   const markers: Marker[] = useMemo(() => {
     const m: Marker[] = [];
     if (showKnown) Object.values(known).forEach((arr) => m.push(...arr));
-<<<<<<< HEAD
     if (pick) m.push({ x: pick.x, y: pick.y, kind: "pick" });
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     if (showMovers && movers) {
       for (const c of movers) {
         c.detections.forEach((d) => m.push({ x: d.x, y: d.y, kind: "track", epoch: d.epoch_index }));
@@ -199,7 +155,6 @@ export default function Viewer() {
       }
     }
     return m;
-<<<<<<< HEAD
   }, [showKnown, known, showMovers, movers, pick]);
 
   // keep the address bar in step with the view, without adding history entries
@@ -215,15 +170,11 @@ export default function Viewer() {
     try { await navigator.clipboard.writeText(window.location.href); setCopied(true); window.setTimeout(() => setCopied(false), 1800); }
     catch { window.prompt("Copy this link", window.location.href); }
   };
-=======
-  }, [showKnown, known, showMovers, movers]);
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
   const A = frames[a], B = frames[b];
   const visible = mode === "blink" && showB ? B : A;
   const sameBand = (x: number, y: number) => data?.same_band_pairs.some(([p, r]) => (p === x && r === y) || (p === y && r === x));
 
-<<<<<<< HEAD
   const lut = useMemo(() => buildGrey(stretch), [stretch]);
   const surfaceData = useMemo(() => (mode === "surface" && A ? decode16(A.data16) : null), [mode, A]);
   const when = (f?: Frame) => f ? (f.date_iso?.slice(0, 10) ?? mjdToDate(f.mjd)) : "";
@@ -234,8 +185,6 @@ export default function Viewer() {
     "COSMOS viewer",
   ].join("   ") : "";
 
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   if (!hasField(q)) return <Landing />;
 
   return (
@@ -246,7 +195,6 @@ export default function Viewer() {
         {data && <Provenance source={data.source} warnings={data.warnings} />}
       </div>
 
-<<<<<<< HEAD
       {loading && (
         <div className="panel p-4 max-w-2xl" role="status">
           <p>Finding every SPHEREx image of this position…</p>
@@ -269,13 +217,6 @@ export default function Viewer() {
 
       {data && (
         <div className="grid gap-3 grid-cols-[minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)_300px]">
-=======
-      {loading && <p className="small">Asking IRSA which spectral images cover this position, then fetching a 10′ cutout of each. The first visit to a field usually takes 20–60 seconds; after that it is cached.</p>}
-      {err && <p className="small warn-text">{err}</p>}
-
-      {data && (
-        <div className="grid gap-3 lg:grid-cols-[220px_minmax(0,1fr)_300px]">
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
           {/* Visits log */}
           <aside className="panel p-2 flex flex-col max-h-[78vh]">
             <div className="flex items-baseline justify-between px-1 pb-1">
@@ -303,25 +244,16 @@ export default function Viewer() {
           <section className="panel flex flex-col min-h-[560px]">
             <div className="flex flex-wrap items-center gap-2 p-2 border-b border-[var(--rule-soft)]">
               <div className="seg" role="group" aria-label="View mode">
-<<<<<<< HEAD
                 {MODES.map((m, i) => (
                   <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} title={`Key ${i + 1}`}>{MODE_LABEL[m]}</button>
                 ))}
               </div>
               {(mode === "blink" || mode === "movie") && (
-=======
-                {(["step", "blink", "swipe", "diff"] as ViewMode[]).map((m, i) => (
-                  <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} title={`Key ${i + 1}`}>{m === "diff" ? "difference" : m}</button>
-                ))}
-              </div>
-              {mode === "blink" && (
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
                 <>
                   <button className="btn" onClick={() => setPlaying((p) => !p)}>{playing ? "Pause" : "Play"}</button>
                   <label className="small flex items-center gap-2">speed<input type="range" min={150} max={1500} step={50} value={1650 - blinkMs} onChange={(e) => setBlinkMs(1650 - Number(e.target.value))} className="!w-24" /></label>
                 </>
               )}
-<<<<<<< HEAD
               {mode === "surface" && <label className="small flex items-center gap-2">height<input type="range" min={0.05} max={1} step={0.01} value={relief} onChange={(e) => setRelief(Number(e.target.value))} className="!w-28" /></label>}
               {mode === "swipe" && <input type="range" min={0} max={1} step={0.005} value={swipe} onChange={(e) => setSwipe(Number(e.target.value))} className="!w-40" aria-label="Swipe position" />}
               <button className="btn btn-quiet ml-auto" onClick={copyLink} title="Copy a link that opens this field, these two visits and this mode">{copied ? "Link copied" : "Copy link"}</button>
@@ -338,16 +270,6 @@ export default function Viewer() {
                 caption={caption} fileName={`cosmos_${data.ra.toFixed(3)}_${data.dec.toFixed(3)}_${mode}`}
                 ariaLabel={`Infrared image of the sky at ${fmtRA(data.ra)} ${fmtDec(data.dec)}, ${mode} view`} />
               )}
-=======
-              {mode === "swipe" && <input type="range" min={0} max={1} step={0.005} value={swipe} onChange={(e) => setSwipe(Number(e.target.value))} className="!w-40" aria-label="Swipe position" />}
-              <span className="ml-auto small">
-                {mode === "diff" ? "B minus A" : mode === "blink" ? (showB ? "showing B" : "showing A") : mode === "swipe" ? "A left, B right" : "showing A"}
-              </span>
-            </div>
-            <div className="flex-1 min-h-[480px]">
-              <SkyCanvas frames={frames} a={a} b={b} mode={mode} showB={showB} swipe={swipe} diff={mode === "diff" ? diff : null}
-                stretch={stretch} markers={markers} showGrid={showGrid} onCursor={setCursor} />
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
             </div>
             <div className="p-2 border-t border-[var(--rule-soft)] flex flex-wrap gap-x-4 gap-y-1 small">
               {mode === "diff" && diff && (
@@ -357,13 +279,9 @@ export default function Viewer() {
                 </>
               )}
               {mode === "diff" && !diff && <span>Reprojecting B onto A…</span>}
-<<<<<<< HEAD
               {mode === "surface" && <span>{no3d ? "This browser cannot draw 3D, so the flat image is shown." : "Brightness is height. A star is a rounded peak as wide as the telescope’s blur; a single-pixel spike is usually a cosmic-ray hit. Drag to turn, scroll to zoom. The Display sliders change the stretch here too."}</span>}
               {mode === "movie" && <span>Every visit in date order. Each one recorded a different wavelength, so stars change brightness from frame to frame; watch for things that change position.</span>}
               {mode !== "diff" && mode !== "surface" && mode !== "movie" && <span>Click a star to measure it in every visit. Scroll or pinch to zoom, drag to pan, double-click to fit. Keys: <span className="kbd">←</span><span className="kbd">→</span> change A, <span className="kbd">[</span><span className="kbd">]</span> change B, <span className="kbd">space</span> blink, <span className="kbd">1</span>–<span className="kbd">6</span> modes, <span className="kbd">i</span> invert.</span>}
-=======
-              {mode !== "diff" && <span>Scroll to zoom, drag to pan, double-click to fit. Keys: <span className="kbd">←</span><span className="kbd">→</span> change A, <span className="kbd">[</span><span className="kbd">]</span> change B, <span className="kbd">space</span> blink, <span className="kbd">i</span> invert.</span>}
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
             </div>
           </section>
 
@@ -382,7 +300,6 @@ export default function Viewer() {
               ) : <p className="note">Move over the image to read position, brightness and the wavelength this pixel recorded.</p>}
             </div>
 
-<<<<<<< HEAD
             {pick && (
               <div className="panel p-3">
                 <div className="flex items-baseline justify-between gap-2">
@@ -408,8 +325,6 @@ export default function Viewer() {
               </div>
             )}
 
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
             <div className="panel p-3">
               <h3 className="mb-1">Visit {visible === A ? "A" : "B"}</h3>
               {visible && <EpochDetails f={visible} />}
@@ -420,16 +335,10 @@ export default function Viewer() {
               <label className="small">Black point<input type="range" min={0} max={0.5} step={0.005} value={stretch.black} onChange={(e) => setStretch({ ...stretch, black: Number(e.target.value) })} /></label>
               <label className="small">White point<input type="range" min={0.05} max={1} step={0.005} value={stretch.white} onChange={(e) => setStretch({ ...stretch, white: Number(e.target.value) })} /></label>
               <label className="small">Contrast (asinh)<input type="range" min={0.01} max={1} step={0.01} value={stretch.a} onChange={(e) => setStretch({ ...stretch, a: Number(e.target.value) })} /></label>
-<<<<<<< HEAD
               <div className="flex flex-wrap gap-x-3 gap-y-1 small">
                 <label className="flex items-center gap-1.5"><input type="checkbox" checked={stretch.invert} onChange={(e) => setStretch({ ...stretch, invert: e.target.checked })} />invert</label>
                 <label className="flex items-center gap-1.5"><input type="checkbox" checked={showGrid} onChange={(e) => setShowGrid(e.target.checked)} />scale ticks</label>
                 <label className="flex items-center gap-1.5" title="Blend neighbouring pixels. Easier on the eye, but the squares are the real measurements."><input type="checkbox" checked={smooth} onChange={(e) => setSmooth(e.target.checked)} />smooth</label>
-=======
-              <div className="flex gap-3 small">
-                <label className="flex items-center gap-1.5"><input type="checkbox" checked={stretch.invert} onChange={(e) => setStretch({ ...stretch, invert: e.target.checked })} />invert</label>
-                <label className="flex items-center gap-1.5"><input type="checkbox" checked={showGrid} onChange={(e) => setShowGrid(e.target.checked)} />scale ticks</label>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
                 <button className="btn btn-quiet ml-auto" onClick={() => setStretch(DEFAULT_STRETCH)}>Reset</button>
               </div>
             </div>
@@ -473,17 +382,12 @@ function Landing() {
   const [preview, setPreview] = useState<EpochsResponse | null>(null);
   const [showB, setShowB] = useState(false);
   useEffect(() => { try { const v = localStorage.getItem("cosmos:last-field"); if (v) setLast(JSON.parse(v)); } catch { /* ignore */ } }, []);
-<<<<<<< HEAD
   const [previewErr, setPreviewErr] = useState<string | null>(null);
   useEffect(() => { api.epochs({ ra: 270, dec: 66.56 }).then(setPreview).catch((e) => setPreviewErr(String(e.message ?? e))); }, []);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = window.setInterval(() => setShowB((s) => !s), 800); return () => window.clearInterval(t);
   }, []);
-=======
-  useEffect(() => { api.epochs({ ra: 270, dec: 66.56 }).then(setPreview).catch(() => {}); }, []);
-  useEffect(() => { const t = window.setInterval(() => setShowB((s) => !s), 800); return () => window.clearInterval(t); }, []);
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   const fields = [
     { label: "North Ecliptic Pole", sub: "SPHEREx deep field, visited on most orbits", ra: 270, dec: 66.56 },
     { label: "South Ecliptic Pole", sub: "the other deep field", ra: 90, dec: -66.56 },
@@ -492,7 +396,6 @@ function Landing() {
   ];
   const pf = preview?.frames ?? [];
   const pb = pf.length > 1 ? 1 : 0;
-<<<<<<< HEAD
   const [spot, setSpot] = useState<{ ra: number; dec: number } | null>(null);
   const [noGlobe, setNoGlobe] = useState(false);
   const globeFields: GlobeField[] = [
@@ -502,19 +405,11 @@ function Landing() {
   return (
     <div className="flex flex-col gap-10 py-4">
     <div className="grid lg:grid-cols-[minmax(0,46ch)_minmax(0,1fr)] gap-x-12 gap-y-8 items-start">
-=======
-  return (
-    <div className="grid lg:grid-cols-[minmax(0,46ch)_minmax(0,1fr)] gap-x-12 gap-y-8 py-4 items-start">
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-4xl leading-tight">The infrared sky, one visit at a time.</h1>
           <p className="lede mt-4">Since 2025 NASA’s SPHEREx has been photographing the whole sky every six months in 102 infrared colours. Put in a position and this viewer fetches every SPHEREx image of it from the archive, so you can flick between visits and see what moved, brightened or vanished.</p>
-<<<<<<< HEAD
           <p className="small mt-4">Asteroids and comets shift between visits. Distant trans-Neptunian objects creep. Variable stars pulse. A planet far beyond Neptune, if one exists, would drift too, although the Planet Nine page shows why it would be fainter than SPHEREx can reach.</p>
-=======
-          <p className="small mt-4">Asteroids and comets shift between visits. Distant trans-Neptunian objects creep. Variable stars pulse. A planet far beyond Neptune, if one exists, would drift too — though, as the Planet Nine page shows, it would be fainter than SPHEREx can reach.</p>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
         </div>
         <div className="panel p-4">
           <h3>Start with a field that has many visits</h3>
@@ -532,18 +427,13 @@ function Landing() {
         </div>
       </div>
       <div className="panel overflow-hidden">
-<<<<<<< HEAD
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-3 py-2 border-b border-[var(--rule-soft)]">
-=======
-        <div className="flex items-baseline gap-3 px-3 py-2 border-b border-[var(--rule-soft)]">
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
           <h3>North Ecliptic Pole, two visits, blinking</h3>
           {preview && <span className="note num">{pf[0]?.date_iso?.slice(0, 10) ?? mjdToDate(pf[0]?.mjd ?? null)} and {pf[pb]?.date_iso?.slice(0, 10) ?? mjdToDate(pf[pb]?.mjd ?? null)}</span>}
           {preview && <span className="ml-auto"><Provenance source={preview.source} compact /></span>}
         </div>
         <div className="aspect-square w-full">
           {preview && pf.length ? (
-<<<<<<< HEAD
             <SkyCanvas frames={pf} a={0} b={pb} mode="blink" showB={showB} swipe={0.5} diff={null} stretch={DEFAULT_STRETCH} markers={[]} showGrid={false} onCursor={() => {}} controls={false} ariaLabel="Two visits of the North Ecliptic Pole field, alternating" />
           ) : previewErr ? (
             <div className="h-full grid place-items-center p-6 text-center"><p className="small max-w-sm">The preview could not be loaded: {previewErr} You can still search for a field above.</p></div>
@@ -576,16 +466,5 @@ function Landing() {
       </section>
     )}
     </div>
-=======
-            <SkyCanvas frames={pf} a={0} b={pb} mode="blink" showB={showB} swipe={0.5} diff={null} stretch={DEFAULT_STRETCH} markers={[]} showGrid={false} onCursor={() => {}} controls={false} />
-          ) : <div className="h-full grid place-items-center note">Fetching the deep field from the archive…</div>}
-        </div>
-        <div className="px-3 py-2 flex items-center gap-3 border-t border-[var(--rule-soft)]">
-          <span className="small">Anything that jumps between the two frames moved.</span>
-          <Link className="btn btn-primary ml-auto" href="/?ra=270&dec=66.56">Open this field</Link>
-        </div>
-      </div>
-    </div>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   );
 }

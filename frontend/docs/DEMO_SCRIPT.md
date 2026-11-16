@@ -33,9 +33,5 @@ is why Rubin will find it, if it exists, and why we never claim SPHEREx has.” 
 **2:50 — Close.** “Real data, honest labels, evidence you can download. MaVionix COSMOS — explore the
 universe, decode cosmic mysteries.”
 
-<<<<<<< HEAD
 **Fallbacks.** If IRSA is slow, use a pre-warmed field. If offline, start with `./run.sh demo` and say so
-=======
-**Fallbacks.** If IRSA is slow, use a pre-warmed field. If offline, tick *offline demo* and say so
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 out loud — the amber badge is on screen anyway.

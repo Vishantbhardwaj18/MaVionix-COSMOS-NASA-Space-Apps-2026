@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-<<<<<<< HEAD
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -9,12 +8,6 @@ import { hasField, useFieldQuery } from "@/components/FieldPicker";
 import { P9_CITATION, P9_REFERENCE } from "@/lib/orbits";
 
 const OrbitScene3D = dynamic(() => import("@/components/OrbitScene3D"), { ssr: false, loading: () => <div className="h-full grid place-items-center note">Loading the 3D view…</div> });
-=======
-import Link from "next/link";
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { api, TNO } from "@/lib/api";
-import { fieldParams, hasField, useFieldQuery } from "@/components/FieldPicker";
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 // Approximate published elements, used only when JPL SBDB cannot be reached.
 const FALLBACK: TNO[] = [
@@ -48,14 +41,11 @@ export default function PlanetNine() {
   const [inj, setInj] = useState<{ curve: { ab_mag: number; completeness: number }[]; depth_50pct_ab: number | null; is_synthetic: boolean; method: string } | null>(null);
   const [injBusy, setInjBusy] = useState(false);
   const [injErr, setInjErr] = useState<string | null>(null);
-<<<<<<< HEAD
   const [flat, setFlat] = useState(false);          // the 2D drawing, by choice or because 3D is unavailable
   const [no3d, setNo3d] = useState(false);
   const [showP9, setShowP9] = useState(true);
   const [sel, setSel] = useState<string | null>(null);
   const today = useMemo(() => new Date(), []);
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
   useEffect(() => { api.tnos(aMin).then((r) => { setTnos(r.objects); setLive(true); }).catch(() => { setTnos(FALLBACK); setLive(false); }); }, [aMin]);
   useEffect(() => { api.brightness(p).then(setBright).catch(() => {}); }, [p]);
@@ -63,10 +53,7 @@ export default function PlanetNine() {
   const extreme = (t: TNO) => t.a > 250 && t.q > 30;
   const perihelia = useMemo(() => tnos.filter(extreme).map((t) => ({ name: t.name, ...project(t, 0) })), [tnos]);
   const R = 1000;
-<<<<<<< HEAD
   const extremeList = useMemo(() => tnos.filter(extreme).sort((x, y) => y.a - x.a).slice(0, 14), [tnos]);
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
   return (
     <div className="flex flex-col gap-4">
@@ -75,18 +62,13 @@ export default function PlanetNine() {
         <p className="lede mt-2">In 2016 Batygin and Brown noticed that the most distant known objects beyond Neptune reach their closest points to the Sun on the same side of the Solar System. A planet of five to ten Earth masses, several hundred AU out, would do that. No such planet has been seen. Optical surveys have already ruled out roughly three quarters of the places it could be, and the Rubin Observatory is expected to settle the matter. SPHEREx has not found it, and this site makes no such claim.</p>
       </div>
 
-<<<<<<< HEAD
       <div className="grid gap-4 grid-cols-[minmax(0,1fr)] lg:grid-cols-2">
-=======
-      <div className="grid gap-4 lg:grid-cols-2">
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
         <section className="panel p-4">
           <div className="flex flex-wrap items-baseline gap-3">
             <h2>Orbits of the most distant known objects</h2>
             {live === null ? <span className="note">asking JPL…</span> : live ? <span className="mark mark-real">JPL SBDB, {tnos.length} objects</span> : <span className="mark mark-synthetic">JPL unreachable; approximate elements for six objects</span>}
           </div>
           <label className="small block mt-2">Show objects with semi-major axis above {aMin} AU<input type="range" min={30} max={400} step={10} value={aMin} onChange={(e) => setAMin(Number(e.target.value))} /></label>
-<<<<<<< HEAD
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2">
             {!no3d && (
               <div className="seg" role="group" aria-label="Drawing">
@@ -97,8 +79,6 @@ export default function PlanetNine() {
             {!flat && !no3d && <label className="small flex items-center gap-1.5"><input type="checkbox" checked={showP9} onChange={(e) => setShowP9(e.target.checked)} />Show the hypothesised orbit</label>}
           </div>
           {flat || no3d ? (
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
           <svg viewBox={`${-R} ${-R} ${2 * R} ${2 * R}`} className="w-full aspect-square mt-2 rounded-sm" style={{ background: "#0c1426" }} role="img" aria-label="Top-down view of distant trans-Neptunian orbits">
             {[250, 500, 750, 1000].map((r) => <g key={r}><circle r={r} fill="none" stroke="#22304c" /><text x={4} y={-r - 6} fill="#6e7a95" fontSize={30}>{r} AU</text></g>)}
             <circle r={30.1} fill="none" stroke="#a3aec6" strokeWidth={2.5} />
@@ -107,7 +87,6 @@ export default function PlanetNine() {
             <circle r={9} fill="#efe7d3" />
             <text x={-R + 24} y={R - 30} fill="#a3aec6" fontSize={32}>Neptune’s orbit in grey. Cream orbits: a &gt; 250 AU and q &gt; 30 AU. Amber dots: where each comes closest to the Sun.</text>
           </svg>
-<<<<<<< HEAD
           ) : (
             <div className="w-full aspect-square mt-2"><OrbitScene3D tnos={tnos} selected={sel} showP9={showP9} date={today} onUnavailable={() => setNo3d(true)} /></div>
           )}
@@ -131,9 +110,6 @@ export default function PlanetNine() {
             </div>
           )}
           <p className="small mt-2 measure">The amber points bunching on one side is the whole observation. In 3D, press “Edge-on” to see the second half of the argument: these orbits are also tilted the same way. The main counter-argument is that surveys have looked harder in some directions than others, which could create the same bunching by selection alone.</p>
-=======
-          <p className="small mt-2 measure">The amber points bunching on one side is the whole observation. The main counter-argument is that surveys have looked harder in some directions than others, which could create the same bunching by selection alone.</p>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
         </section>
 
         <section className="panel p-4 flex flex-col gap-3">

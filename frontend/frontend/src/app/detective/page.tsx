@@ -11,10 +11,7 @@ export default function Movers() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [sel, setSel] = useState<Candidate | null>(null);
-<<<<<<< HEAD
   const [reload, setReload] = useState(0);
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
   useEffect(() => {
     if (!hasField(q)) return;
@@ -22,11 +19,7 @@ export default function Movers() {
     api.movers(q).then((d) => { setData(d); setSel(d.candidates[0] ?? null); })
       .catch((e) => setErr(String(e.message ?? e))).finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-<<<<<<< HEAD
   }, [q.ra, q.dec, q.target, q.synthetic, reload]);
-=======
-  }, [q.ra, q.dec, q.target, q.synthetic]);
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
   const spectrumHref = (c: Candidate) => `/spectrum?${fieldParams(q, {
     ra_src: String(c.detections[0].ra), dec_src: String(c.detections[0].dec),
@@ -49,7 +42,6 @@ export default function Movers() {
         {data && <Provenance source={data.source} warnings={data.warnings} compact />}
         {data && <a className="btn ml-auto" href={api.reportUrl(q)}>Download the candidate list (CSV)</a>}
       </div>
-<<<<<<< HEAD
       <p className="small measure">Each visit is searched at five times the noise. A source with no counterpart in any other visit is a transient; transients are linked into a track when the motion between them is physically plausible. Every track is then compared with JPL’s predicted positions of catalogued bodies. A track that matches is <em>known</em>; one that does not is <em>unmatched</em>, which usually means an artefact or an ephemeris mismatch and is never, on its own, a discovery.</p>
 
       {loading && <p className="small" role="status">Extracting sources from every visit, linking tracks and asking JPL what should be there…</p>}
@@ -63,15 +55,6 @@ export default function Movers() {
 
       {data && (
         <div className="grid gap-3 grid-cols-[minmax(0,1fr)] lg:grid-cols-[360px_minmax(0,1fr)]">
-=======
-      <p className="small measure">Each visit is searched at five times the noise. A source with no counterpart in any other visit is a transient; transients are linked into a track when the motion between them is physically plausible. Every track is then compared with JPL’s predicted positions of catalogued bodies. A track that matches is <em>known</em>; one that does not is <em>unmatched</em> — which usually means an artefact or an ephemeris mismatch, and never, on its own, a discovery.</p>
-
-      {loading && <p className="small">Extracting sources from every visit, linking tracks and asking JPL what should be there…</p>}
-      {err && <p className="small warn-text">{err}</p>}
-
-      {data && (
-        <div className="grid gap-3 lg:grid-cols-[360px_minmax(0,1fr)]">
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
           <div className="panel p-2">
             <div className="flex items-baseline justify-between px-1 pb-1">
               <h3>{data.candidates.length} track{data.candidates.length === 1 ? "" : "s"}</h3>
@@ -102,13 +85,8 @@ export default function Movers() {
                 <div className="flex flex-wrap items-center gap-3">
                   <h2>{sel.status === "known" && sel.match && "name" in sel.match ? String(sel.match.name) : sel.id}</h2>
                   <span className={`mark ${sel.status === "known" ? "mark-known" : "mark-unmatched"}`}>{sel.status}</span>
-<<<<<<< HEAD
                   <div className="ml-auto flex flex-wrap gap-2">
                     <Link className="btn" href={`/?${fieldParams(q, { overlay: "movers", mode: "blink", a: String(sel.detections[0].epoch_index), b: String(sel.detections[sel.detections.length - 1].epoch_index) })}`}>Show in the viewer</Link>
-=======
-                  <div className="ml-auto flex gap-2">
-                    <Link className="btn" href={`/?${fieldParams(q)}`}>Show in the viewer</Link>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
                     <Link className="btn btn-primary" href={spectrumHref(sel)}>Build its spectrum</Link>
                   </div>
                 </div>
@@ -145,22 +123,14 @@ export default function Movers() {
                   </div>
                 </div>
 
-<<<<<<< HEAD
                 <div className="scroll-x"><table className="data">
-=======
-                <table className="data">
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
                   <thead><tr><th>Visit</th><th>MJD</th><th>RA</th><th>Dec</th><th>SNR</th><th>Pixel flags</th></tr></thead>
                   <tbody>
                     {sel.detections.map((d, k) => (
                       <tr key={k} className="num"><td>{d.epoch_index}</td><td>{d.mjd?.toFixed(3)}</td><td>{d.ra.toFixed(5)}°</td><td>{d.dec.toFixed(5)}°</td><td>{d.snr.toFixed(1)}</td><td>{d.flagged ? <span className="warn-text">flagged</span> : "clean"}</td></tr>
                     ))}
                   </tbody>
-<<<<<<< HEAD
                 </table></div>
-=======
-                </table>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
                 <p className="note">{data.disclaimer}</p>
               </div>
             ) : <p className="small">Select a track to see its evidence.</p>}

@@ -1,11 +1,7 @@
 # Testing report
 
 ## Automated (offline, reproducible)
-<<<<<<< HEAD
 `cd backend && python -m pytest -q`: **21 passed**, no network needed.
-=======
-`cd backend && pytest -q` — **13 passed** (Python 3.13, astropy 8.0, photutils 3.1, FastAPI 0.163).
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 | Test | What it proves |
 |---|---|
@@ -22,7 +18,6 @@
 | `test_api_epochs_are_labelled_synthetic_in_demo_mode` | Demo mode responses carry `source="synthetic"`, a SYNTHETIC warning, and per-frame flags |
 | `test_api_diff_movers_spectrum_report` | End-to-end: diff → movers (with thumbnails and disclaimer) → spectrum along the track → CSV report |
 | `test_api_validation` | 400s on missing/invalid coordinates |
-<<<<<<< HEAD
 | `test_status_and_headers_in_demo_mode` | `/api/status` reports sample mode; security headers and a request id are set |
 | `test_rate_limit_returns_429` | The per-client limit answers 429 with `Retry-After`; health checks are never limited |
 
@@ -67,42 +62,15 @@ checkbox not responding while a search ran, and the header overflowing on phones
 6. Spectrum of a bright static star: ≥ 6 points spanning ≥ 3 detectors; cool-star template preferred.
 7. Injection–recovery on a real NEP cutout: 50 % depth within ~0.5 mag of the configured survey depth.
 8. Planet Nine page: the orbit panel shows no "JPL unreachable" notice; the a > 250 AU, q > 30 AU perihelia cluster on one side.
-=======
-
-Frontend: `npm run build` — TypeScript strict type-check and production build pass (5 routes).
-Headless browser smoke test (Playwright, demo mode): landing with live blinking preview, viewer with
-cursor readout, movers overlay drawn on the canvas, difference mode with the wavelength-mismatch
-notice, Movers evidence page, Spectrum along a track, Planet Nine with completeness run. No page
-errors; the only console error is the expected 503 from JPL when offline, which the UI handles with
-a labelled fallback. One UX defect was found and fixed by this test: the "things that moved"
-checkbox did not reflect the click while the search was running.
-
-## Live validation checklist (run on a connected machine)
-1. `python backend/scripts/verify_irsa.py 270 66.56` → all five checks pass; note the number of epochs
-   at the North Ecliptic Pole (expect many).
-2. Sky Time Machine, NEP field: blink two same-band epochs; stars must be static, noise pattern must change.
-3. Difference of a *different-band* pair must show the wavelength-mismatch warning.
-4. Mover Detective on an ecliptic field near opposition: at least one `known` track (main-belt
-   asteroid) with the JPL name and mean separation < 15″.
-5. Mover Detective on a high-|β|, high-|b| field: zero or only low-score candidates.
-6. Spectrum of a bright static star: ≥ 6 points spanning ≥ 3 detectors; cool-star template preferred.
-7. Injection–recovery on a real NEP cutout: 50 % depth within ~0.5 mag of the configured survey depth.
-8. Planet X page: SBDB badge shows “live”; the a > 250 AU, q > 30 AU perihelia cluster on one side.
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 Record results in this file before submission (date, field, outcome, screenshot path).
 
 ## Known gaps
-<<<<<<< HEAD
 * Live IRSA and JPL calls were written from the documented endpoints and have never been run against
   the real services: the build environment could not reach those hosts. Step 1 above is therefore
   mandatory, and the checklist results should be recorded here before real data is presented.
 * The browser test runs in Chromium only, with software WebGL. Safari, Firefox and real phone GPUs have not been checked.
 * The orbit maths has no automated test; it was checked by hand against known values (Sedna's perihelion direction, Jupiter's heliocentric longitude for the build date).
 * No load testing has been done. The rate limit is per process and in memory.
-=======
-* Live IRSA/JPL calls were implemented against the documented endpoints but could not be executed in
-  the build environment (no outbound access to those hosts). Step 1 above is therefore mandatory.
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 * No aperture corrections; photometry is relative-quality.
 * Linking is linear; fast or curved tracks across > 3 epochs may fragment into several candidates.

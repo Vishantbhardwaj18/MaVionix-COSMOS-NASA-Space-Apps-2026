@@ -134,7 +134,6 @@ def test_api_validation():
     assert client.get("/api/sky/epochs").status_code == 400
     assert client.get("/api/sky/epochs", params={"ra": 400, "dec": 0}).status_code == 400
     assert client.get("/api/planetx/brightness", params={"distance_au": 300}).json()["V_mag"] > 0
-<<<<<<< HEAD
 
 
 def test_status_and_headers_in_demo_mode():
@@ -159,5 +158,3 @@ def test_rate_limit_returns_429(monkeypatch):
     main._hits.clear()
     assert codes[:3] == [200, 200, 200] and codes[3] == 429
     assert c.get("/api/health").status_code == 200   # health is never limited
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4

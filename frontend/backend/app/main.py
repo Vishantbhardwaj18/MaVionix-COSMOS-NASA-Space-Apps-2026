@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """MaVionix COSMOS API: application wiring, middleware and error handling."""
 from __future__ import annotations
 
@@ -80,36 +79,10 @@ async def guard(request: Request, call_next):
     return response
 
 
-=======
-import logging
-
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-from .api.routes import router
-from .config import settings
-
-logging.basicConfig(level=logging.INFO)
-
-app = FastAPI(
-    title="MaVionix COSMOS API",
-    description="SPHEREx Sky Time Machine — NASA Space Apps 2026, 'Planet X and SPHEREx'",
-    version="1.0.0",
-)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[o.strip() for o in settings.cors_origins.split(",")],
-    allow_methods=["*"], allow_headers=["*"],
-)
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 app.include_router(router)
 
 
 @app.get("/")
 def root():
-<<<<<<< HEAD
     return {"service": "MaVionix COSMOS API", "version": __version__, "docs": "/docs",
             "health": "/api/health", "status": "/api/status"}
-=======
-    return {"service": "MaVionix COSMOS API", "docs": "/docs", "health": "/api/health"}
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4

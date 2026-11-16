@@ -44,7 +44,6 @@ For moving targets (comets, TNOs) a fixed name → position is only valid at one
 mover. Primary header `SYNTHETC=True`; every API response carries `is_synthetic` and the UI shows a
 persistent badge. Used only when `COSMOS_MODE=demo` or when live data are unavailable and fallback
 is enabled.
-<<<<<<< HEAD
 
 ## 6. Background night sky (cosmetic, real data)
 The animated page background is drawn from real catalogue data, not random dots.
@@ -98,5 +97,3 @@ appears. No such planet has been observed.
 All six are the same Hipparcos/Tycho catalogue and Milky Way outlines seen in different directions
 through a stereographic projection. Constellation figures on the globe are d3-celestial's
 `constellations.lines.json` (BSD-3-Clause).
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4

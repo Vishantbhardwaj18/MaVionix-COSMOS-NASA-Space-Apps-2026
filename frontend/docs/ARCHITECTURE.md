@@ -17,10 +17,7 @@
 │  GET /api/sky/epochs   → service.get_field → frames (PNG, metadata, λ)  │
 │  GET /api/sky/diff     → reproject + difference (PNG and 16-bit)        │
 │  GET /api/sky/known    → JPL SBIdent bodies in a visit, pixel coords    │
-<<<<<<< HEAD
 │  GET /api/status       → can the server reach IRSA and JPL right now?   │
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 │  GET /api/movers       → movers.find_movers → jpl.match_candidates      │
 │  GET /api/spectrum     → spectrum.forced_photometry (+ track)           │
 │  GET /api/planetx/*    → jpl.tno_elements · detectability.*             │
@@ -79,7 +76,6 @@ required for this workload.
 * `/api/movers` on 20 epochs × 100×100 px: < 2 s CPU.
 * Injection–recovery: 9 magnitudes × 12 injections × detection ≈ 3–6 s; `n_per_mag` is capped at 40.
 * For judging/demo, pre-warm the showcase fields: `curl "$API/api/sky/epochs?ra=270&dec=66.56"`.
-<<<<<<< HEAD
 
 ## Request path and operations (1.1)
 
@@ -105,5 +101,3 @@ browser ──► website (Next.js) ──/api/*──► API (FastAPI) ──�
 * `SpaceBackground` is a 2D canvas that projects the star catalogue stereographically. The route
   and the viewer's resolved field select a scene from `lib/skyScene.ts`; the camera basis is
   interpolated to the new scene over 1.7 s (not at all under reduced motion).
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4

@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 // Empty by default: requests go to this site's own /api proxy (src/app/api/[...path]/route.ts).
 export const API = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
-=======
-export const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 export type Frame = {
   index: number; obs_id: string; detector: number | null; collection: string; mjd: number | null;
@@ -34,7 +30,6 @@ export type TNO = { name: string; a: number; e: number; i: number; om: number; w
 
 async function get<T>(path: string, params: Record<string, string | number | boolean | undefined>): Promise<T> {
   const qs = Object.entries(params).filter(([, v]) => v !== undefined && v !== "").map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`).join("&");
-<<<<<<< HEAD
   let r: Response;
   try {
     r = await fetch(`${API}${path}${qs ? `?${qs}` : ""}`);
@@ -48,28 +43,16 @@ async function get<T>(path: string, params: Record<string, string | number | boo
       if (typeof d === "string") msg = d;
       else if (Array.isArray(d) && d[0]?.msg) msg = d.map((x: { msg: string }) => x.msg).join("; ");
     } catch { /* not JSON */ }
-=======
-  const r = await fetch(`${API}${path}?${qs}`);
-  if (!r.ok) {
-    let msg = r.statusText;
-    try { msg = (await r.json()).detail ?? msg; } catch { /* ignore */ }
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     throw new Error(msg);
   }
   return r.json();
 }
 
-<<<<<<< HEAD
 export type ArchiveStatus = { mode: "live" | "demo"; serving: "spherex" | "synthetic" | "none"; message: string; irsa: { ok: boolean; ms: number } | null; jpl: { ok: boolean; ms: number } | null };
 export type FieldQuery = { target?: string; ra?: number; dec?: number; synthetic?: boolean };
 
 export const api = {
   status: () => get<ArchiveStatus>("/api/status", {}),
-=======
-export type FieldQuery = { target?: string; ra?: number; dec?: number; synthetic?: boolean };
-
-export const api = {
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   health: () => get<{ ok: boolean; mode: string }>("/api/health", {}),
   showcase: () => get<{ fields: { name: string; ra: number; dec: number; why: string }[] }>("/api/showcase", {}),
   epochs: (q: FieldQuery) => get<EpochsResponse>("/api/sky/epochs", q),
@@ -80,11 +63,7 @@ export const api = {
   tnos: (a_min = 150) => get<{ n: number; objects: TNO[] }>("/api/planetx/tnos", { a_min }),
   brightness: (p: { mass_earth: number; albedo: number; distance_au: number }) => get<Record<string, unknown>>("/api/planetx/brightness", p),
   injection: (q: FieldQuery) => get<{ curve: { ab_mag: number; completeness: number }[]; depth_50pct_ab: number | null; is_synthetic: boolean; method: string }>("/api/planetx/injection", { ...q, n_per_mag: 8 }),
-<<<<<<< HEAD
   reportUrl: (q: FieldQuery) => `${API}/api/report.csv?${Object.entries(q).filter(([, v]) => v !== undefined).map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`).join("&")}`,
-=======
-  reportUrl: (q: FieldQuery) => `${API}/api/report.csv?${Object.entries(q).filter(([, v]) => v !== undefined).map(([k, v]) => `${k}=${v}`).join("&")}`,
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 };
 
 export const mjdToDate = (mjd: number | null) => mjd === null ? "—" : new Date((mjd - 40587) * 86400000).toISOString().slice(0, 10);

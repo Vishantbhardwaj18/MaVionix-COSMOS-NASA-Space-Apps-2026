@@ -77,7 +77,6 @@ def health():
             "pixel_scale_arcsec": settings.pixel_scale_arcsec, "acknowledgement": SPHEREX_ACK}
 
 
-<<<<<<< HEAD
 _status_cache: dict = {"t": 0.0, "value": None}
 
 
@@ -121,8 +120,6 @@ def status():
     return value
 
 
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 @router.get("/showcase")
 def showcase():
     return {"fields": SHOWCASE}

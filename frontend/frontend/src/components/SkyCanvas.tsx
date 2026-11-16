@@ -4,15 +4,9 @@ import { Frame } from "@/lib/api";
 import { decode16, pixelToWorld, sampleGrid } from "@/lib/wcs";
 
 export type Stretch = { black: number; white: number; a: number; invert: boolean };
-<<<<<<< HEAD
 export type Marker = { x: number; y: number; label?: string; kind: "known" | "candidate" | "track" | "pick"; epoch?: number };
 export type Cursor = { x: number; y: number; ra: number; dec: number; value: number; lambda: number | null } | null;
 export type ViewMode = "step" | "blink" | "swipe" | "diff" | "movie" | "surface";
-=======
-export type Marker = { x: number; y: number; label?: string; kind: "known" | "candidate" | "track" | "cursor"; epoch?: number };
-export type Cursor = { x: number; y: number; ra: number; dec: number; value: number; lambda: number | null } | null;
-export type ViewMode = "step" | "blink" | "swipe" | "diff";
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 type Props = {
   frames: Frame[];
@@ -23,15 +17,11 @@ type Props = {
   diff: { data16: string; shape: number[] } | null;
   stretch: Stretch;
   markers: Marker[];
-<<<<<<< HEAD
   caption?: string;           // written under the image when it is saved as a PNG
   fileName?: string;
   ariaLabel?: string;
   showGrid: boolean;
   smooth?: boolean;           // interpolate between pixels instead of showing them as squares
-=======
-  showGrid: boolean;
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   onCursor: (c: Cursor) => void;
   onClick?: (x: number, y: number) => void;
   controls?: boolean;
@@ -39,11 +29,7 @@ type Props = {
 
 const LUT_SIZE = 65536;
 
-<<<<<<< HEAD
 export function buildGrey(st: Stretch): Uint8ClampedArray {
-=======
-function buildGrey(st: Stretch): Uint8ClampedArray {
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   const lut = new Uint8ClampedArray(LUT_SIZE);
   const lo = st.black * (LUT_SIZE - 1), hi = Math.max(st.white * (LUT_SIZE - 1), lo + 1);
   const k = 1 / Math.asinh(1 / st.a);
@@ -88,11 +74,7 @@ function paintDiff(ctx: CanvasRenderingContext2D, data: Uint16Array, nx: number,
   ctx.putImageData(img, 0, 0);
 }
 
-<<<<<<< HEAD
 export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stretch, markers, showGrid, onCursor, onClick, controls = true, caption, fileName, ariaLabel, smooth = false }: Props) {
-=======
-export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stretch, markers, showGrid, onCursor, onClick, controls = true }: Props) {
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const offA = useRef<HTMLCanvasElement | null>(null);
@@ -101,12 +83,9 @@ export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stre
   const [view, setView] = useState({ scale: 1, ox: 0, oy: 0 });   // image px -> screen px
   const drag = useRef<{ sx: number; sy: number; ox: number; oy: number } | null>(null);
   const [size, setSize] = useState({ w: 600, h: 600 });
-<<<<<<< HEAD
   const [grabbing, setGrabbing] = useState(false);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ d: number; mx: number; my: number } | null>(null);
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
   const fa = frames[a], fb = frames[b];
   const dataA = useMemo(() => fa ? decode16(fa.data16) : null, [fa]);
@@ -149,11 +128,7 @@ export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stre
     const ctx = c.getContext("2d")!;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = "#0c1426"; ctx.fillRect(0, 0, size.w, size.h);
-<<<<<<< HEAD
     ctx.imageSmoothingEnabled = smooth; ctx.imageSmoothingQuality = "high";
-=======
-    ctx.imageSmoothingEnabled = false;
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     const draw = (src: HTMLCanvasElement | null) => { if (src) ctx.drawImage(src, view.ox, view.oy, nx * view.scale, ny * view.scale); };
     if (mode === "diff") draw(offD.current);
     else if (mode === "blink") draw(showB ? offB.current : offA.current);
@@ -179,11 +154,7 @@ export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stre
     const tracks = markers.filter((m) => m.kind === "track");
     if (tracks.length > 1) {
       ctx.strokeStyle = "rgba(242,181,68,0.6)"; ctx.setLineDash([4, 4]); ctx.beginPath();
-<<<<<<< HEAD
       tracks.forEach((m, i) => { const p = toScreen(m.x, m.y); if (i) ctx.lineTo(p.sx, p.sy); else ctx.moveTo(p.sx, p.sy); });
-=======
-      tracks.forEach((m, i) => { const p = toScreen(m.x, m.y); i ? ctx.lineTo(p.sx, p.sy) : ctx.moveTo(p.sx, p.sy); });
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
       ctx.stroke(); ctx.setLineDash([]);
     }
     for (const m of markers) {
@@ -194,7 +165,6 @@ export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stre
       if (m.kind === "known") { ctx.strokeStyle = "#7cc48f"; ctx.beginPath(); ctx.rect(sx - r, sy - r, 2 * r, 2 * r); ctx.stroke(); }
       else if (m.kind === "candidate") { ctx.strokeStyle = "#f2b544"; ctx.beginPath(); ctx.arc(sx, sy, r, 0, 2 * Math.PI); ctx.stroke(); }
       else if (m.kind === "track") { ctx.fillStyle = m.epoch === current ? "#f2b544" : "rgba(242,181,68,0.45)"; ctx.beginPath(); ctx.arc(sx, sy, 3, 0, 2 * Math.PI); ctx.fill(); }
-<<<<<<< HEAD
       else if (m.kind === "pick") {
         ctx.strokeStyle = "#ffffff"; ctx.beginPath();
         ctx.moveTo(sx - r - 6, sy); ctx.lineTo(sx - r + 3, sy); ctx.moveTo(sx + r - 3, sy); ctx.lineTo(sx + r + 6, sy);
@@ -242,28 +212,13 @@ export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stre
   };
 
   const toImage = (e: { clientX: number; clientY: number }) => {
-=======
-      if (m.label && m.kind !== "track") { ctx.fillStyle = "#efe7d3"; ctx.fillText(m.label, sx + r + 4, sy + 4); }
-    }
-  }, [size, view, mode, showB, swipe, markers, showGrid, nx, ny, fa, a, b, lut, dataA, dataB, dataD]);
-
-  const toImage = (e: React.MouseEvent) => {
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     const rect = canvas.current!.getBoundingClientRect();
     const sx = e.clientX - rect.left, sy = e.clientY - rect.top;
     const x = (sx - view.ox) / view.scale - 0.5, y = ny - 1 - ((sy - view.oy) / view.scale - 0.5);
     return { x, y, sx, sy };
   };
 
-<<<<<<< HEAD
   const readCursor = (e: { clientX: number; clientY: number }) => {
-=======
-  const onMove = (e: React.MouseEvent) => {
-    if (drag.current) {
-      setView((v) => ({ ...v, ox: drag.current!.ox + e.clientX - drag.current!.sx, oy: drag.current!.oy + e.clientY - drag.current!.sy }));
-      return;
-    }
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     if (!fa || !dataA) return onCursor(null);
     const { x, y } = toImage(e);
     const xi = Math.round(x), yi = Math.round(y);
@@ -274,7 +229,6 @@ export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stre
     onCursor({ x: xi, y: yi, ra, dec, value, lambda: sampleGrid(fa.wave_grid, xi, yi, nx, ny) });
   };
 
-<<<<<<< HEAD
   // Pointer events cover mouse, pen and touch. Two fingers pinch-zoom about their midpoint.
   const onPointerDown = (e: React.PointerEvent) => {
     if (!controls) return;
@@ -340,35 +294,6 @@ export default function SkyCanvas({ frames, a, b, mode, showB, swipe, diff, stre
             <button onClick={() => zoomAt(size.w / 2, size.h / 2, 1.5)} aria-label="Zoom in" title="Zoom in (+)">+</button>
             <button onClick={() => zoomAt(size.w / 2, size.h / 2, 1 / 1.5)} aria-label="Zoom out" title="Zoom out (-)">−</button>
           </div>
-=======
-  const onWheel = (e: React.WheelEvent) => {
-    const { sx, sy } = toImage(e);
-    const f = e.deltaY < 0 ? 1.2 : 1 / 1.2;
-    setView((v) => {
-      const s = Math.min(Math.max(v.scale * f, 0.5), 40);
-      return { scale: s, ox: sx - (sx - v.ox) * (s / v.scale), oy: sy - (sy - v.oy) * (s / v.scale) };
-    });
-  };
-
-  return (
-    <div ref={wrap} className="relative w-full h-full select-none" style={{ cursor: drag.current ? "grabbing" : "crosshair" }}>
-      <canvas ref={canvas} className="w-full h-full block"
-        onMouseMove={onMove}
-        onMouseLeave={() => { drag.current = null; onCursor(null); }}
-        onMouseDown={(e) => { drag.current = { sx: e.clientX, sy: e.clientY, ox: view.ox, oy: view.oy }; }}
-        onMouseUp={(e) => {
-          const d = drag.current; drag.current = null;
-          if (d && Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 3 && onClick) { const { x, y } = toImage(e); onClick(Math.round(x), Math.round(y)); }
-        }}
-        onWheel={onWheel}
-        onDoubleClick={fit}
-        role="img" aria-label="SPHEREx cutout viewer" />
-      {controls && (
-        <div className="absolute right-2 bottom-2 seg" style={{ background: "rgba(23,35,57,0.85)" }}>
-          <button onClick={fit} title="Fit to window (double-click)">Fit</button>
-          <button onClick={() => setView((v) => ({ ...v, scale: v.scale * 1.5 }))} aria-label="Zoom in">+</button>
-          <button onClick={() => setView((v) => ({ ...v, scale: v.scale / 1.5 }))} aria-label="Zoom out">−</button>
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
         </div>
       )}
     </div>

@@ -14,10 +14,7 @@ from __future__ import annotations
 import hashlib
 import io
 import os
-<<<<<<< HEAD
 import threading
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 import time
 from dataclasses import dataclass, asdict
 
@@ -52,10 +49,7 @@ class IRSAClient:
                                     headers={"User-Agent": "MaVionix-COSMOS/1.0 (SpaceApps 2026)"})
         os.makedirs(settings.cache_dir, exist_ok=True)
         self._collections: list[str] | None = None
-<<<<<<< HEAD
         self.last_warnings: list[str] = []
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
     # ------------------------------------------------------------------ SIA
     def list_collections(self) -> list[str]:
@@ -75,7 +69,6 @@ class IRSAClient:
         return self._collections
 
     def query_epochs(self, ra: float, dec: float, radius_deg: float = 0.05) -> list[Epoch]:
-<<<<<<< HEAD
         """All spectral images covering a position, oldest first.
 
         Each configured collection is asked separately. A collection that errors (for example a
@@ -85,9 +78,6 @@ class IRSAClient:
         epochs: list[Epoch] = []
         problems: list[str] = []
         last_exc: Exception | None = None
-=======
-        epochs: list[Epoch] = []
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
         for coll in self.list_collections():
             params = {
                 "COLLECTION": coll,
@@ -95,7 +85,6 @@ class IRSAClient:
                 "RESPONSEFORMAT": "votable",
                 "MAXREC": settings.max_epochs * 6,
             }
-<<<<<<< HEAD
             try:
                 r = self._client.get(settings.irsa_sia_url, params=params)
                 r.raise_for_status()
@@ -121,13 +110,6 @@ class IRSAClient:
             step = (len(unique) - 1) / (settings.max_epochs - 1)
             unique = [unique[round(i * step)] for i in range(settings.max_epochs)]
         return unique
-=======
-            r = self._client.get(settings.irsa_sia_url, params=params)
-            r.raise_for_status()
-            epochs.extend(self._parse_sia(r.content, coll))
-        epochs.sort(key=lambda e: (e.mjd or 0.0, e.detector or 0))
-        return epochs[: settings.max_epochs]
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
     @staticmethod
     def _parse_sia(content: bytes, coll: str) -> list[Epoch]:
@@ -197,17 +179,12 @@ class IRSAClient:
                 if attempt == 2:
                     raise
                 time.sleep(1.5 * (attempt + 1))
-<<<<<<< HEAD
         if not (data.startswith(b"SIMPLE") or data.startswith(b"\x1f\x8b")):   # FITS, or gzipped FITS
             raise ValueError("The archive answered, but not with a FITS file")
         tmp = f"{path}.{os.getpid()}.{threading.get_ident()}.tmp"
         with open(tmp, "wb") as f:      # write-then-rename so a second worker never reads half a file
             f.write(data)
         os.replace(tmp, path)
-=======
-        with open(path, "wb") as f:
-            f.write(data)
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
         return data
 
 

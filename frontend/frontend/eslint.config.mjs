@@ -5,7 +5,6 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-<<<<<<< HEAD
   {
     rules: {
       // Pages here load data in effects and reset view state when the field changes. That is the
@@ -15,8 +14,6 @@ const eslintConfig = defineConfig([
       "@next/next/no-img-element": "off",
     },
   },
-=======
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

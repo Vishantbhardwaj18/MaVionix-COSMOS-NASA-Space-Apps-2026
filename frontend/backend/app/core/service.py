@@ -4,14 +4,10 @@ labelled synthetic), with an in-process LRU so a session's repeated calls
 from __future__ import annotations
 
 import logging
-<<<<<<< HEAD
 import threading
 import time
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
-=======
-from collections import OrderedDict
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 from dataclasses import dataclass
 
 from astropy.coordinates import SkyCoord, get_icrs_coordinates
@@ -34,17 +30,12 @@ class Field:
     warnings: list[str]
 
 
-<<<<<<< HEAD
 _cache: "OrderedDict[tuple, tuple[float, Field]]" = OrderedDict()   # key -> (expires_at, field)
 _CACHE_MAX = 16
 _FALLBACK_TTL_S = 90.0        # a fallback caused by an outage must not outlive the outage
 _locks: dict[tuple, threading.Lock] = {}
 _locks_guard = threading.Lock()
 _FETCH_WORKERS = 4            # parallel cutout downloads; kept low to be polite to the archive
-=======
-_cache: "OrderedDict[tuple, Field]" = OrderedDict()
-_CACHE_MAX = 16
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 
 def resolve_target(target: str) -> tuple[float, float, str]:
@@ -63,7 +54,6 @@ def resolve_target(target: str) -> tuple[float, float, str]:
     return float(c.ra.deg), float(c.dec.deg), "sesame"
 
 
-<<<<<<< HEAD
 def _fetch_one(ep, ra: float, dec: float, size: float):
     data = irsa().fetch_cutout(ep.access_url, ra, dec, size)
     si = load_spectral_image(data)
@@ -98,21 +88,11 @@ def get_field(ra: float, dec: float, size_arcsec: float | None = None, force_syn
 
 
 def _load_field(ra: float, dec: float, size: float, wants_synthetic: bool) -> Field:
-=======
-def get_field(ra: float, dec: float, size_arcsec: float | None = None, force_synthetic: bool = False) -> Field:
-    size = size_arcsec or settings.cutout_size_arcsec
-    key = (round(ra, 4), round(dec, 4), size, force_synthetic or settings.mode == "demo")
-    if key in _cache:
-        _cache.move_to_end(key)
-        return _cache[key]
-
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
     warnings: list[str] = []
     epochs: list[dict] = []
     images: list[SpectralImage] = []
     source = "irsa"
 
-<<<<<<< HEAD
     if not wants_synthetic:
         try:
             found = irsa().query_epochs(ra, dec, radius_deg=size / 3600.0 / 2)
@@ -137,31 +117,6 @@ def get_field(ra: float, dec: float, size_arcsec: float | None = None, force_syn
 
     if not images:
         if wants_synthetic or settings.allow_synthetic_fallback:
-=======
-    if not (force_synthetic or settings.mode == "demo"):
-        try:
-            found = irsa().query_epochs(ra, dec, radius_deg=size / 3600.0 / 2)
-            for ep in found:
-                try:
-                    data = irsa().fetch_cutout(ep.access_url, ra, dec, size)
-                    si = load_spectral_image(data)
-                    if si.mjd is None:
-                        si.mjd = ep.mjd
-                    if si.detector is None:
-                        si.detector = ep.detector
-                    images.append(si)
-                    epochs.append(ep.to_dict())
-                except Exception as exc:
-                    warnings.append(f"cutout failed for {ep.obs_id}: {type(exc).__name__}")
-            if not images:
-                warnings.append("IRSA returned no SPHEREx images for this position (or all cutouts failed)")
-        except Exception as exc:
-            warnings.append(f"IRSA query failed: {type(exc).__name__}: {exc}")
-            log.warning("IRSA query failed: %s", exc)
-
-    if not images:
-        if force_synthetic or settings.mode == "demo" or settings.allow_synthetic_fallback:
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
             source = "synthetic"
             warnings.append("SYNTHETIC DATA - NOT SPHEREx. Shown because live data was unavailable or demo mode is on.")
             for meta, data in demo_epoch_set(ra, dec):
@@ -170,15 +125,7 @@ def get_field(ra: float, dec: float, size_arcsec: float | None = None, force_syn
         else:
             raise RuntimeError("No SPHEREx data available and synthetic fallback disabled")
 
-<<<<<<< HEAD
     return Field(ra=ra, dec=dec, epochs=epochs, images=images, source=source, warnings=warnings)
-=======
-    f = Field(ra=ra, dec=dec, epochs=epochs, images=images, source=source, warnings=warnings)
-    _cache[key] = f
-    if len(_cache) > _CACHE_MAX:
-        _cache.popitem(last=False)
-    return f
->>>>>>> 6be1513821cf7d4d47b8ac5f3b8e90208e5639a4
 
 
 def pairs_same_band(field: Field, tol_um: float = 0.25) -> list[tuple[int, int]]:
