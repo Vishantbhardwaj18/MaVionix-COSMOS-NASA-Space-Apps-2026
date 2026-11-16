@@ -15,9 +15,11 @@ export default function Movers() {
 
   useEffect(() => {
     if (!hasField(q)) return;
+    let alive = true;
     setLoading(true); setErr(null); setData(null); setSel(null);
-    api.movers(q).then((d) => { setData(d); setSel(d.candidates[0] ?? null); })
-      .catch((e) => setErr(String(e.message ?? e))).finally(() => setLoading(false));
+    api.movers(q).then((d) => { if (alive) { setData(d); setSel(d.candidates[0] ?? null); } })
+      .catch((e) => { if (alive) setErr(String(e.message ?? e)); }).finally(() => { if (alive) setLoading(false); });
+    return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q.ra, q.dec, q.target, q.synthetic, reload]);
 
@@ -46,7 +48,7 @@ export default function Movers() {
 
       {loading && <p className="small" role="status">Extracting sources from every visit, linking tracks and asking JPL what should be there…</p>}
       {err && (
-        <div className="callout max-w-2xl" role="alert">
+        <div className="callout appear max-w-2xl" role="alert">
           <p>The search for moving objects did not finish</p>
           <p className="small mt-1">{err}</p>
           <button className="btn btn-primary mt-3" onClick={() => setReload((r) => r + 1)}>Try again</button>

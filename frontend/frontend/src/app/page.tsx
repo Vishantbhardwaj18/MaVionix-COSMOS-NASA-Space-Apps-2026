@@ -57,10 +57,13 @@ export default function Viewer() {
 
   // load epochs
   useEffect(() => {
-    if (!hasField(q)) return;
+    if (!hasField(q)) { setData(null); setErr(null); setLoading(false); setSkyFocus(null); return; }
+    let alive = true;          // a slower answer for an earlier field must not replace a newer one
     setLoading(true); setErr(null); setData(null); setDiff(null); setMovers(null); setKnown({}); setShowMovers(false); setShowKnown(false); setPick(null);
     startedAt.current = Date.now();
     api.epochs(q).then((d) => {
+      if (!alive) return;
+      if (!d.frames.length) { setErr("The archive has no SPHEREx images of this position yet."); return; }
       const last = d.frames.length - 1, w = want.current;
       const ok = (v: number) => Number.isInteger(v) && v >= 0 && v <= last;
       setSkyFocus({ ra: d.ra, dec: d.dec });        // the page background turns to this part of the sky
@@ -68,11 +71,12 @@ export default function Viewer() {
       if (w.mode && MODES.includes(w.mode)) setMode(w.mode);
       if (w.overlay === "movers") {
         setMoversBusy(true);
-        api.movers(q).then((r) => { setMovers(r.candidates); setShowMovers(true); }).catch(() => {}).finally(() => setMoversBusy(false));
+        api.movers(q).then((r) => { if (alive) { setMovers(r.candidates); setShowMovers(true); } }).catch(() => {}).finally(() => { if (alive) setMoversBusy(false); });
       }
       want.current = { a: 0, b: 1, mode: null, overlay: null };   // only honour the link once
     })
-      .catch((e) => setErr(String(e.message ?? e))).finally(() => setLoading(false));
+      .catch((e) => { if (alive) setErr(String(e.message ?? e)); }).finally(() => { if (alive) setLoading(false); });
+    return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q.ra, q.dec, q.target, q.synthetic, reload]);
 
@@ -105,22 +109,28 @@ export default function Viewer() {
   // difference image
   useEffect(() => {
     if (mode !== "diff" || !data) return;
+    let alive = true;
     setDiff(null);
-    api.diff(q, a, b).then(setDiff).catch((e) => setErr(String(e.message ?? e)));
+    api.diff(q, a, b).then((d) => { if (alive) setDiff(d); }).catch((e) => { if (alive) setErr(String(e.message ?? e)); });
+    return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, a, b, data]);
 
   // known objects for the visible epoch
   useEffect(() => {
     if (!showKnown || !data) return;
+    if (mode === "movie" && playing) return;      // do not fire one JPL request per frame while a timelapse plays
     const idx = mode === "blink" && showB ? b : a;
     if (known[idx]) return;
     api.known(q, idx).then((r) => {
       setKnown((k) => ({ ...k, [idx]: r.objects.map((o) => ({ x: o.x, y: o.y, label: o.name, kind: "known" as const, epoch: idx })) }));
       setKnownNote(r.note ?? (r.objects.length ? null : "No catalogued small bodies predicted in this cutout at this time."));
-    }).catch((e) => setKnownNote(`JPL lookup did not answer (${e.message}). Try again in a moment.`));
+    }).catch((e) => {
+      setKnown((k) => ({ ...k, [idx]: [] }));      // remember the miss so a blinking view does not retry twice a second
+      setKnownNote(`JPL lookup did not answer (${e.message}). Untick and tick the box to try again.`);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showKnown, a, b, showB, mode, data]);
+  }, [showKnown, a, b, showB, mode, data, playing]);
 
   const loadMovers = () => {
     if (movers) { setShowMovers((s) => !s); return; }
@@ -132,7 +142,10 @@ export default function Viewer() {
   const frames = data?.frames ?? [];
   const n = frames.length;
   const onKey = useCallback((e: KeyboardEvent) => {
-    if ((e.target as HTMLElement)?.tagName === "INPUT") return;
+    const tag = (e.target as HTMLElement)?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;                       // leave browser shortcuts alone
+    if (e.key === " " && (tag === "BUTTON" || tag === "A")) return;      // space presses the focused control
     if (!n) return;
     if (e.key === "ArrowRight") setA((v) => (v + 1) % n);
     else if (e.key === "ArrowLeft") setA((v) => (v - 1 + n) % n);
@@ -161,14 +174,26 @@ export default function Viewer() {
   useEffect(() => {
     if (!data) return;
     const u = new URL(window.location.href);
-    u.searchParams.set("a", String(a)); u.searchParams.set("b", String(b)); u.searchParams.set("mode", mode);
+    // Browsers limit how often the address may change, so a playing timelapse does not write each frame.
+    if (!(mode === "movie" && playing)) u.searchParams.set("a", String(a));
+    u.searchParams.set("b", String(b)); u.searchParams.set("mode", mode);
     if (showMovers) u.searchParams.set("overlay", "movers"); else u.searchParams.delete("overlay");
-    window.history.replaceState(window.history.state, "", u);
-  }, [a, b, mode, data, showMovers]);
+    if (u.href === window.location.href) return;
+    try { window.history.replaceState(window.history.state, "", u); } catch { /* rate-limited by the browser: harmless */ }
+  }, [a, b, mode, data, showMovers, playing]);
 
   const copyLink = async () => {
-    try { await navigator.clipboard.writeText(window.location.href); setCopied(true); window.setTimeout(() => setCopied(false), 1800); }
-    catch { window.prompt("Copy this link", window.location.href); }
+    const href = window.location.href;
+    try { await navigator.clipboard.writeText(href); }
+    catch {
+      // older browsers and non-secure pages: copy through a temporary field instead of a blocking dialog
+      const t = document.createElement("textarea");
+      t.value = href; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select();
+      try { document.execCommand("copy"); } catch { /* nothing more to try */ }
+      t.remove();
+    }
+    setCopied(true); window.setTimeout(() => setCopied(false), 1900);
   };
 
   const A = frames[a], B = frames[b];
@@ -196,14 +221,23 @@ export default function Viewer() {
       </div>
 
       {loading && (
-        <div className="panel p-4 max-w-2xl" role="status">
-          <p>Finding every SPHEREx image of this position…</p>
-          <p className="small mt-1">The archive is asked which images cover it, then a 10′ cutout of each is downloaded. A field seen for the first time usually takes 20 to 60 seconds. After that it is cached and opens at once.</p>
-          <p className="note mt-2 num">{waited} s</p>
+        <div className="fade-in flex flex-col gap-3" role="status">
+          <div className="panel p-4 max-w-2xl">
+            <p>Finding every SPHEREx image of this position…</p>
+            <p className="small mt-1">The archive is asked which images cover it, then a 10′ cutout of each is downloaded. A field seen for the first time usually takes 20 to 60 seconds. After that it is cached and opens at once.</p>
+            <div className="progress mt-3" />
+            <p className="note mt-2 num">{waited} s</p>
+          </div>
+          {/* the shape of the viewer, so the page does not jump when the images arrive */}
+          <div className="grid gap-3 grid-cols-[minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)_300px]" aria-hidden="true">
+            <div className="panel p-2 hidden lg:flex flex-col gap-2">{[0, 1, 2, 3].map((k) => <div key={k} className="skeleton h-11" />)}</div>
+            <div className="panel p-3 flex flex-col gap-3"><div className="skeleton h-8 w-2/3" /><div className="skeleton h-[420px]" /></div>
+            <div className="hidden lg:flex flex-col gap-3"><div className="panel p-3"><div className="skeleton h-28" /></div><div className="panel p-3"><div className="skeleton h-40" /></div></div>
+          </div>
         </div>
       )}
       {err && !loading && (
-        <div className="callout max-w-2xl" role="alert">
+        <div className="callout appear max-w-2xl" role="alert">
           <p>{data ? "That step did not work" : "This field could not be loaded"}</p>
           <p className="small mt-1">{err}</p>
           <div className="flex flex-wrap gap-2 mt-3">
@@ -216,7 +250,7 @@ export default function Viewer() {
       {data && n === 1 && <p className="small">Only one visit covers this position so far, so there is nothing to compare it with yet. The ecliptic poles have the most visits.</p>}
 
       {data && (
-        <div className="grid gap-3 grid-cols-[minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)_300px]">
+        <div className="fade-in grid gap-3 grid-cols-[minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)_300px]">
           {/* Visits log */}
           <aside className="panel p-2 flex flex-col max-h-[78vh]">
             <div className="flex items-baseline justify-between px-1 pb-1">
@@ -225,7 +259,7 @@ export default function Viewer() {
             </div>
             <ol className="overflow-y-auto flex-1 flex flex-col gap-0.5">
               {frames.map((f) => (
-                <li key={f.index} className={`flex items-center gap-2 px-1 py-1 rounded-sm text-sm ${f.index === a || f.index === b ? "bg-[var(--panel-2)]" : ""}`}>
+                <li key={f.index} className={`visit-row flex items-center gap-2 px-1 py-1 rounded-sm text-sm ${f.index === a || f.index === b ? "bg-[var(--panel-2)]" : ""}`}>
                   <img src={`data:image/png;base64,${f.png}`} alt="" className="pix w-8 h-8 rounded-sm border border-[var(--rule)]" />
                   <div className="flex-1 min-w-0 leading-tight">
                     <div className="num">{f.date_iso?.slice(0, 10) ?? mjdToDate(f.mjd)}</div>
@@ -256,7 +290,8 @@ export default function Viewer() {
               )}
               {mode === "surface" && <label className="small flex items-center gap-2">height<input type="range" min={0.05} max={1} step={0.01} value={relief} onChange={(e) => setRelief(Number(e.target.value))} className="!w-28" /></label>}
               {mode === "swipe" && <input type="range" min={0} max={1} step={0.005} value={swipe} onChange={(e) => setSwipe(Number(e.target.value))} className="!w-40" aria-label="Swipe position" />}
-              <button className="btn btn-quiet ml-auto" onClick={copyLink} title="Copy a link that opens this field, these two visits and this mode">{copied ? "Link copied" : "Copy link"}</button>
+              <button className="btn btn-quiet ml-auto" onClick={copyLink} title="Copy a link that opens this field, these two visits and this mode">Copy link</button>
+              {copied && <span className="toast" role="status">Link copied. Anyone who opens it sees this exact view.</span>}
               <span className="small" aria-live="polite">
                 {mode === "diff" ? "B minus A" : mode === "blink" ? (showB ? "showing B" : "showing A") : mode === "swipe" ? "A left, B right" : mode === "movie" ? `visit ${a + 1} of ${n}, ${when(A)}` : "showing A"}
               </span>
@@ -301,7 +336,7 @@ export default function Viewer() {
             </div>
 
             {pick && (
-              <div className="panel p-3">
+              <div className="panel p-3 slide-in">
                 <div className="flex items-baseline justify-between gap-2">
                   <h3>This spot in every visit</h3>
                   <button className="btn btn-quiet !py-0" onClick={() => setPick(null)} aria-label="Clear the measurement">Clear</button>
@@ -405,7 +440,7 @@ function Landing() {
   return (
     <div className="flex flex-col gap-10 py-4">
     <div className="grid lg:grid-cols-[minmax(0,46ch)_minmax(0,1fr)] gap-x-12 gap-y-8 items-start">
-      <div className="flex flex-col gap-6">
+      <div className="stagger flex flex-col gap-6">
         <div>
           <h1 className="text-4xl leading-tight">The infrared sky, one visit at a time.</h1>
           <p className="lede mt-4">Since 2025 NASA’s SPHEREx has been photographing the whole sky every six months in 102 infrared colours. Put in a position and this viewer fetches every SPHEREx image of it from the archive, so you can flick between visits and see what moved, brightened or vanished.</p>
@@ -426,7 +461,7 @@ function Landing() {
           {last && hasField(last) && <p className="note mt-3">Last time you were looking at <Link className="link" href={`/?${fieldParams(last)}`}>{last.target ?? `${last.ra}, ${last.dec}`}</Link>.</p>}
         </div>
       </div>
-      <div className="panel overflow-hidden">
+      <div className="panel overflow-hidden fade-in" style={{ animationDelay: "0.3s" }}>
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-3 py-2 border-b border-[var(--rule-soft)]">
           <h3>North Ecliptic Pole, two visits, blinking</h3>
           {preview && <span className="note num">{pf[0]?.date_iso?.slice(0, 10) ?? mjdToDate(pf[0]?.mjd ?? null)} and {pf[pb]?.date_iso?.slice(0, 10) ?? mjdToDate(pf[pb]?.mjd ?? null)}</span>}
@@ -447,7 +482,7 @@ function Landing() {
     </div>
 
     {!noGlobe && (
-      <section className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,44ch)] gap-x-12 gap-y-4 items-center">
+      <section className="fade-in grid lg:grid-cols-[minmax(0,1fr)_minmax(0,44ch)] gap-x-12 gap-y-4 items-center" style={{ animationDelay: "0.45s" }}>
         <div className="aspect-square w-full max-w-[640px] mx-auto"><SkyGlobe fields={globeFields} picked={spot} onPick={(ra, dec) => setSpot({ ra, dec })} onUnavailable={() => setNoGlobe(true)} /></div>
         <div className="flex flex-col gap-3">
           <h2 className="text-2xl">Or pick a spot on the sky</h2>

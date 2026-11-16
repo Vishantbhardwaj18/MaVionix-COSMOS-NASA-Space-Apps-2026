@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CartesianGrid, ErrorBar, ReferenceArea, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from "recharts";
@@ -20,10 +20,18 @@ export default function Spectrum() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const seq = useRef(0);
   const run = () => {
-    if (!hasField(q) || !raSrc || !decSrc) return;
+    if (!hasField(q) || !raSrc.trim() || !decSrc.trim()) return;
+    const r = Number(raSrc), d = Number(decSrc);
+    if (!Number.isFinite(r) || !Number.isFinite(d) || r < 0 || r >= 360 || d < -90 || d > 90) {
+      setErr("Give the source position in degrees: RA from 0 to 360 and Dec from -90 to +90."); setData(null); return;
+    }
+    const mine = ++seq.current;       // only the newest request may fill the page
     setLoading(true); setErr(null);
-    api.spectrum(q, Number(raSrc), Number(decSrc), track).then(setData).catch((e) => setErr(String(e.message ?? e))).finally(() => setLoading(false));
+    api.spectrum(q, r, d, track).then((res) => { if (mine === seq.current) setData(res); })
+      .catch((e) => { if (mine === seq.current) { setErr(String(e.message ?? e)); setData(null); } })
+      .finally(() => { if (mine === seq.current) setLoading(false); });
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(run, [q.ra, q.dec, q.target, q.synthetic, track]);
@@ -50,17 +58,20 @@ export default function Spectrum() {
       </div>
       <p className="small measure">SPHEREx’s filters change wavelength across each detector, so the same patch of sky is recorded at a different colour on every visit. Measuring one source in every visit — or following a moving object along its track — builds a sparse spectrum from 0.75 to 5 microns out of plain images.</p>
 
-      <div className="panel p-3 flex flex-col md:flex-row gap-2 md:items-end">
-        <label className="small flex-1">Source RA (degrees)<input className="input" value={raSrc} onChange={(e) => setRaSrc(e.target.value)} /></label>
-        <label className="small flex-1">Source Dec (degrees)<input className="input" value={decSrc} onChange={(e) => setDecSrc(e.target.value)} /></label>
-        <button className="btn btn-primary" onClick={run} disabled={!hasField(q) || !raSrc || !decSrc}>Measure in every visit</button>
-      </div>
+      <form className="panel p-3 flex flex-col md:flex-row gap-2 md:items-end" onSubmit={(e) => { e.preventDefault(); run(); }}>
+        <label className="small flex-1">Source RA (degrees)<input className="input" inputMode="decimal" value={raSrc} onChange={(e) => setRaSrc(e.target.value)} /></label>
+        <label className="small flex-1">Source Dec (degrees)<input className="input" inputMode="decimal" value={decSrc} onChange={(e) => setDecSrc(e.target.value)} /></label>
+        <button type="submit" className="btn btn-primary" disabled={!hasField(q) || !raSrc || !decSrc || loading}>Measure in every visit</button>
+      </form>
       {track && <p className="note">Following the moving object’s track: the aperture is placed at a different position in each visit.</p>}
       {!hasField(q) && <p className="small">Choose a field first — <Link className="link" href="/">open the viewer</Link>, or pick a track on the Movers page and it will bring you here with the positions filled in.</p>}
       {loading && <p className="small" role="status">Placing an aperture in each visit and summing the light…</p>}
-      {err && <div className="callout max-w-2xl" role="alert"><p>The spectrum could not be measured</p><p className="small mt-1">{err}</p></div>}
+      {err && <div className="callout appear max-w-2xl" role="alert"><p>The spectrum could not be measured</p><p className="small mt-1">{err}</p></div>}
 
-      {data && (
+      {data && data.points.length === 0 && !loading && (
+        <p className="small panel p-3 max-w-2xl">No visit could measure this position. It is either outside the cutout, within 8 pixels of its edge, or on pixels with no data. Pick a source nearer the middle of the field.</p>
+      )}
+      {data && data.points.length > 0 && (
         <div className="grid gap-3 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="panel p-3 h-[440px]">
             <ResponsiveContainer width="100%" height="100%">

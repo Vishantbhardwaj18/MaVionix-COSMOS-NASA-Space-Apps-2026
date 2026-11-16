@@ -169,7 +169,7 @@ export default function SkyGlobe({ fields, picked, onPick, onUnavailable }: Prop
   }, [picked, ready]);
 
   return (
-    <div ref={box} className="w-full h-full" style={{ cursor: "crosshair" }} role="img"
+    <div ref={box} className="fade-in w-full h-full" style={{ cursor: "crosshair" }} role="img"
       aria-label="A globe of the whole sky with the bright stars, the ecliptic and SPHEREx's two deep fields at the ecliptic poles. The same fields are listed as links beside it." />
   );
 }

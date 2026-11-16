@@ -176,7 +176,7 @@ export default function OrbitScene3D({ tnos, selected, showP9, date, onUnavailab
 
   return (
     <div className="relative w-full h-full">
-      <div ref={box} className="w-full h-full rounded-sm overflow-hidden" role="img"
+      <div ref={box} className="fade-in w-full h-full rounded-sm overflow-hidden" role="img"
         aria-label="Three-dimensional view of the orbits of distant trans-Neptunian objects around the Sun. The same objects are listed in the table beside it." />
       {ready && (
         <div className="absolute left-2 bottom-2 seg" style={{ background: "rgba(23,35,57,0.9)" }}>

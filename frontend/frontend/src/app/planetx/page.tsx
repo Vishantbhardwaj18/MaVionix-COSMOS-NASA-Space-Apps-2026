@@ -47,8 +47,18 @@ export default function PlanetNine() {
   const [sel, setSel] = useState<string | null>(null);
   const today = useMemo(() => new Date(), []);
 
-  useEffect(() => { api.tnos(aMin).then((r) => { setTnos(r.objects); setLive(true); }).catch(() => { setTnos(FALLBACK); setLive(false); }); }, [aMin]);
-  useEffect(() => { api.brightness(p).then(setBright).catch(() => {}); }, [p]);
+  useEffect(() => {
+    let alive = true;
+    api.tnos(aMin).then((r) => { if (!alive) return; if (r.objects.length) { setTnos(r.objects); setLive(true); } else { setTnos(FALLBACK); setLive(false); } })
+      .catch(() => { if (alive) { setTnos(FALLBACK); setLive(false); } });
+    return () => { alive = false; };
+  }, [aMin]);
+  // wait until the slider rests: one request per adjustment, not one per pixel of drag
+  useEffect(() => {
+    let alive = true;
+    const t = window.setTimeout(() => { api.brightness(p).then((b) => { if (alive) setBright(b); }).catch(() => {}); }, 180);
+    return () => { alive = false; window.clearTimeout(t); };
+  }, [p]);
 
   const extreme = (t: TNO) => t.a > 250 && t.q > 30;
   const perihelia = useMemo(() => tnos.filter(extreme).map((t) => ({ name: t.name, ...project(t, 0) })), [tnos]);

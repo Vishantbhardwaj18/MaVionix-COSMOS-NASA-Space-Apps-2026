@@ -82,7 +82,7 @@ export default function Surface3D({ data, nx, ny, lut, height, onUnavailable }: 
   }, [data, nx, ny, lut, height, ready]);
 
   return (
-    <div ref={box} className="w-full h-full" role="img"
+    <div ref={box} className="fade-in w-full h-full" role="img"
       aria-label="The image drawn as a three-dimensional surface, with brightness as height. Drag to turn it." />
   );
 }

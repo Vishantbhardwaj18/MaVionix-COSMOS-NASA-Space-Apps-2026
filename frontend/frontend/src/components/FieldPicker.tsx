@@ -60,7 +60,7 @@ export default function FieldSearch() {
       </form>
       {problem && <p className="absolute left-0 top-full mt-1 small warn-text panel px-2 py-1 z-40" role="alert">{problem}</p>}
       {open && !problem && (
-        <div className="panel absolute left-0 right-0 top-full mt-1 p-2 z-30 text-sm">
+        <div className="panel appear absolute left-0 right-0 top-full mt-1 p-2 z-30 text-sm" style={{ boxShadow: "0 14px 30px -12px rgba(3,7,16,0.9)" }}>
           <p className="note px-2 pb-1">Fields with many SPHEREx visits</p>
           {showcase.map((f) => (
             <button key={f.name} className="w-full text-left px-2 py-1.5 rounded hover:bg-[var(--panel-2)]" onClick={() => go(`${f.ra}, ${f.dec}`)}>

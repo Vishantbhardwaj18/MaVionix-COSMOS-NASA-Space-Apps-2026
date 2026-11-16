@@ -5,6 +5,7 @@ import "./globals.css";
 import ArchiveStatus from "@/components/ArchiveStatus";
 import FieldSearch from "@/components/FieldPicker";
 import NavLinks from "@/components/NavLinks";
+import PageTransition from "@/components/PageTransition";
 import SkyCaption from "@/components/SkyCaption";
 import SpaceBackground from "@/components/SpaceBackground";
 
@@ -27,10 +28,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col">
         <a href="#main" className="skip-link">Skip to the content</a>
         <Suspense fallback={null}><SpaceBackground /></Suspense>
-        <header className="border-b border-[var(--rule-soft)] bg-[var(--panel)]">
+        <header className="site-top border-b border-[var(--rule-soft)] bg-[var(--panel)]">
           <div className="site-header mx-auto max-w-[1500px] px-4 py-2.5">
             <div className="site-brand flex items-center gap-3">
-              <Link href="/" className="flex items-baseline gap-2 shrink-0">
+              <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="COSMOS, start page">
+                <img src="/space-apps-san-diego.png" alt="NASA Space Apps San Diego" width={34} height={34} className="event-badge" />
                 <span style={{ fontFamily: "var(--serif)" }} className="text-xl">COSMOS</span>
                 <span className="note hidden xl:inline">SPHEREx sky, over time</span>
               </Link>
@@ -41,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         <main id="main" className="mx-auto w-full max-w-[1500px] px-4 py-5 flex-1">
-          <Suspense fallback={<p className="note">Loading…</p>}>{children}</Suspense>
+          <Suspense fallback={<p className="note">Loading…</p>}><PageTransition>{children}</PageTransition></Suspense>
         </main>
         <footer className="border-t border-[var(--rule-soft)] bg-[var(--field)]">
           <div className="mx-auto max-w-[1500px] px-4 py-5 note flex flex-col md:flex-row gap-2 md:gap-8">
@@ -49,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Suspense fallback={null}><SkyCaption /></Suspense>
             <p className="measure">SPHEREx data: NASA/JPL-Caltech/IPAC, from the NASA/IPAC Infrared Science Archive. Small-body positions: JPL Solar System Dynamics. Background sky: Hipparcos and Tycho stars and Milky Way outlines from d3-celestial. This is a student project, not a NASA product, and nothing on it is a claim to have found Planet X.</p>
             </div>
-            <p className="md:ml-auto md:text-right">MaVionix, 2026 NASA Space Apps Challenge<br /><Link className="link" href="/about">How it works and its limits</Link></p>
+            <div className="md:ml-auto flex items-start gap-3 md:text-right md:flex-row-reverse"><img src="/space-apps-san-diego.png" alt="NASA Space Apps San Diego" width={64} height={64} className="event-badge shrink-0" loading="lazy" /><p>Team MaVionix<br />NASA Space Apps Challenge 2026, San Diego<br /><Link className="link" href="/about">How it works and its limits</Link></p></div>
           </div>
         </footer>
       </body>
