@@ -252,7 +252,7 @@ equivalents.
 
 ## Architecture
 
-![COSMOS architecture](docs/screenshots/laptop/architecture.png)
+![COSMOS architecture](docs/screenshots/laptop/architecture.svg)
 
 ```
 frontend/   Next.js 16, React 19, TypeScript, Tailwind 4, Recharts, three.js
