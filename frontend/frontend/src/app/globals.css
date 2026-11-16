@@ -121,4 +121,24 @@ table.data tr:last-child td { border-bottom: 0; }
 /* a card for "this failed, here is what to do" */
 .callout { border: 1px solid color-mix(in srgb, var(--red) 45%, transparent); background: color-mix(in srgb, var(--red) 8%, var(--panel)); border-radius: 4px; padding: 0.9rem 1rem; }
 
+:root { --ease: cubic-bezier(0.2, 0.7, 0.2, 1); }
+.about-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+@media (min-width: 1180px) { .about-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.math-block { border-top: 1px solid var(--rule-soft); padding-top: 1rem; scroll-margin-top: 5rem; }
+.math-block h3 { display: flex; align-items: baseline; gap: 0.6rem; }
+.math-n { font-family: var(--sans); font-size: 0.72rem; font-weight: 600; color: var(--accent-ink); background: var(--accent); border-radius: 3px; padding: 0.05rem 0.4rem; position: relative; top: -0.1rem; }
+.eq { margin: 0.6rem 0; padding: 0.7rem 0.9rem; background: color-mix(in srgb, var(--panel-2) 70%, transparent); border-left: 2px solid var(--accent); border-radius: 0 3px 3px 0; color: var(--ink); }
+.eq .katex-display, .eq .katex-display > .katex { margin: 0; text-align: left; }
+.katex { font-size: 1.04em; }
+.derive { margin-top: 0.5rem; border: 1px solid var(--rule-soft); border-radius: 3px; }
+.derive > summary { cursor: pointer; padding: 0.35rem 0.7rem; font-size: 0.82rem; color: var(--accent); list-style: none; display: flex; align-items: center; gap: 0.45rem; transition: background-color 0.16s ease; }
+.derive > summary::-webkit-details-marker { display: none; }
+.derive > summary::before { content: "+"; display: inline-block; width: 0.8rem; font-weight: 600; transition: transform 0.2s var(--ease); }
+.derive[open] > summary::before { transform: rotate(45deg); }
+.derive > summary:hover { background: color-mix(in srgb, var(--panel-2) 60%, transparent); }
+.derive-body { padding: 0.1rem 0.8rem 0.7rem; border-top: 1px solid var(--rule-soft); animation: drop 0.22s var(--ease) backwards; }
+.derive > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@keyframes drop { from { opacity: 0; transform: translateY(-6px) scale(0.985); } to { opacity: 1; transform: none; } }
+.event-badge { border-radius: 6px; display: block; }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

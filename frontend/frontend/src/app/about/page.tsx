@@ -1,10 +1,136 @@
+import Link from "next/link";
+import "katex/dist/katex.min.css";
+import Maths from "./Maths";
+
+const SRC = {
+  planetaria: "https://core.ac.uk/download/352902336.pdf",
+  stem: "https://www.thebusinessresearchcompany.com/report/stem-education-in-k-12-global-market-report",
+  zooniverse: "https://blog.zooniverse.org/2026/04/21/3-million-volunteers/",
+  nasaZooniverse: "https://science.nasa.gov/get-involved/citizen-science/nasa-volunteers-help-zooniverse-reach-1-billion-classifications/",
+};
+
+const SCENARIOS = [
+  { name: "Cautious", venues: 20, venuePrice: 1500, schools: 100, schoolPrice: 300, builds: 0 },
+  { name: "Middle", venues: 85, venuePrice: 1500, schools: 500, schoolPrice: 300, builds: 1 },
+  { name: "Stretch", venues: 213, venuePrice: 2000, schools: 2000, schoolPrice: 300, builds: 3 },
+];
+const BUILD_PRICE = 25000;
+const PLANETARIUMS = 4267;
+const usd = (n: number) => "$" + n.toLocaleString("en-US");
+
 export default function About() {
   return (
-    <article className="reading max-w-[78ch] flex flex-col gap-6 my-2">
+    <div className="about-grid my-2">
+    <article className="reading flex flex-col gap-6">
       <div>
         <h1>How this works</h1>
         <p className="lede mt-2">Built for the 2026 NASA Space Apps challenge “Planet X and SPHEREx”: show SPHEREx images of any spot on the sky and make it easy to see how they change between visits. Everything on the site traces back to a public NASA or JPL product and a stated calculation.</p>
       </div>
+
+      <section>
+        <h2>The problem</h2>
+        <p className="small mt-1">NASA’s SPHEREx photographs the whole sky again and again, and every image is public. Almost nobody outside a research group can look at it.</p>
+        <ul className="small mt-2 list-disc pl-5 flex flex-col gap-1">
+          <li>Each image is a multi-extension FITS file of about 70 MB, found through an archive query language. A student or teacher cannot open one, let alone compare two.</li>
+          <li>SPHEREx’s defining feature is repetition: the same sky every six months, and far more often near the ecliptic poles. The archive serves single images; nothing public shows one place over time.</li>
+          <li>Every pixel records a different wavelength, so a plain before-and-after comparison misleads. General-purpose image viewers do not know this.</li>
+          <li>The question the public asks most, Planet Nine, is usually told as hype. Few tools show what the data can and cannot say.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>The solution</h2>
+        <p className="small mt-1">COSMOS is the front door to that data: type a position, see every visit, and see what changed. It runs in a browser with no install and no account.</p>
+        <ul className="small mt-2 list-disc pl-5 flex flex-col gap-1">
+          <li><Link className="link" href="/">Viewer</Link>: every visit of any position, with blink, swipe, difference, timelapse and a 3D surface.</li>
+          <li><Link className="link" href="/detective">Movers</Link>: things that changed position are found automatically, checked against JPL’s catalogue, and shown with their evidence.</li>
+          <li><Link className="link" href="/spectrum">Spectrum</Link>: repeat visits become a spectrum of one source, because each visit saw a different colour.</li>
+          <li><Link className="link" href="/planetx">Planet Nine</Link>: the real orbits in 3D, and a calculator showing why the planet would be too faint for SPHEREx.</li>
+          <li>Sample data is labelled everywhere, and an unmatched object is never called a discovery.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Who it helps</h2>
+        <div className="scroll-x mt-2"><table className="data">
+          <thead><tr><th>Who</th><th>What they get</th></tr></thead>
+          <tbody>
+            <tr><td>Students and teachers</td><td>A real NASA dataset for a lesson on motion, colour and evidence, on a school laptop or a phone.</td></tr>
+            <tr><td>Planetariums and science centres</td><td>A live exhibit: visitors choose a patch of sky and watch it change.</td></tr>
+            <tr><td>Citizen scientists</td><td>A way to inspect candidates themselves, with the JPL check and a CSV to share.</td></tr>
+            <tr><td>Researchers</td><td>A quick look at a field before downloading anything, and a link that reopens the exact view.</td></tr>
+            <tr><td>Science communicators</td><td>Saved images that carry their own source and date.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h2>Where the novelty lies</h2>
+        <ol className="small mt-1 list-decimal pl-5 flex flex-col gap-1">
+          <li><b>Wavelength-aware comparison.</b> The viewer reads the wavelength recorded at every pixel and warns when two visits cannot be fairly subtracted. Blink tools built for ordinary cameras do not.</li>
+          <li><b>A spectrum from pictures.</b> SPHEREx’s shifting filters are usually a nuisance for comparing dates. Here they are the method: revisits are stacked into a spectrum, even along a moving object’s track.</li>
+          <li><b>Evidence, not verdicts.</b> Each moving object comes with image stamps, signal-to-noise, pixel flags and the JPL identification, and the label “unmatched” in place of “new”.</li>
+          <li><b>Measured limits.</b> Fake stars are injected into the real image to measure what that field could have shown, in place of a quoted survey depth.</li>
+          <li><b>The view is the link.</b> Field, visits, mode and overlays live in the address, so anyone can reopen and check a finding.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>The business model</h2>
+        <p className="small mt-1">Free for people, paid for by institutions. The public viewer stays free and open source, because the data is public and reach is the point. Income comes from three services built on the same code:</p>
+        <div className="scroll-x mt-2"><table className="data">
+          <thead><tr><th>Offer</th><th>Who pays</th><th>What they get</th><th>How it is priced</th></tr></thead>
+          <tbody>
+            <tr><td>Exhibit licence</td><td>Planetariums, science centres, museums</td><td>A kiosk mode with their branding, chosen fields cached to work offline, updates and support</td><td>Yearly, per venue</td></tr>
+            <tr><td>Classroom pack</td><td>Schools and outreach programmes</td><td>Lesson plans built on the viewer, teacher accounts, saved class fields, worksheets</td><td>Yearly, per school</td></tr>
+            <tr><td>Custom build</td><td>Observatories, survey teams, agencies</td><td>The engine adapted to another repeat-imaging dataset, hosted for them or delivered</td><td>Per project</td></tr>
+          </tbody>
+        </table></div>
+        <p className="small mt-2">Costs are small and mostly fixed: hosting for the site and the cutout cache, support time, and the work of each custom build. The data itself costs nothing. Grants and sponsorship for public science tools are a fourth route and are not counted in the figures below.</p>
+      </section>
+
+      <section>
+        <h2>The market</h2>
+        <p className="small mt-1">The viewer should stay free: the data is public and the audience is education. The buyers are institutions that want it installed, branded, supported or adapted.</p>
+        <div className="scroll-x mt-2"><table className="data">
+          <thead><tr><th>Group</th><th>Size</th><th>What it means here</th></tr></thead>
+          <tbody>
+            <tr><td>Planetariums</td><td className="num">At least 4,267 working planetariums and about 143 million visits a year (2020 count)</td><td>The clearest buyers of an exhibit licence. <a className="link" href={SRC.planetaria} target="_blank" rel="noreferrer">Source</a></td></tr>
+            <tr><td>School STEM spending</td><td className="num">$49.9 billion in 2025, forecast $56.8 billion in 2026</td><td>The whole worldwide category, from one market-research firm. Context, not a target: one astronomy tool can reach only a sliver of it. <a className="link" href={SRC.stem} target="_blank" rel="noreferrer">Source</a></td></tr>
+            <tr><td>Citizen scientists</td><td className="num">3 million Zooniverse volunteers; 324 thousand on NASA projects since 2020</td><td>Users and advocates rather than payers. They show the appetite exists. <a className="link" href={SRC.zooniverse} target="_blank" rel="noreferrer">Source</a>, <a className="link" href={SRC.nasaZooniverse} target="_blank" rel="noreferrer">source</a></td></tr>
+          </tbody>
+        </table></div>
+        <p className="note mt-2">The same engine could serve other surveys that image the sky repeatedly, such as the Rubin Observatory. That is a direction, not something built.</p>
+      </section>
+
+      <section>
+        <h2>What it could earn</h2>
+        <p className="small mt-1">COSMOS has no customers and no tested prices yet, so its sales cannot be stated. What can be shown is the arithmetic under stated assumptions: venues pay an exhibit licence, schools pay for a classroom pack, and a few institutions pay for a custom build at {usd(BUILD_PRICE)} each.</p>
+        <div className="scroll-x mt-2"><table className="data">
+          <thead><tr><th>Scenario</th><th>Venues</th><th>Schools</th><th>Custom builds</th><th>Yearly revenue</th></tr></thead>
+          <tbody>
+            {SCENARIOS.map((s) => (
+              <tr key={s.name} className="num">
+                <td>{s.name}</td>
+                <td>{s.venues} at {usd(s.venuePrice)} ({((s.venues / PLANETARIUMS) * 100).toFixed(1)}% of planetariums)</td>
+                <td>{s.schools.toLocaleString("en-US")} at {usd(s.schoolPrice)}</td>
+                <td>{s.builds}</td>
+                <td>{usd(s.venues * s.venuePrice + s.schools * s.schoolPrice + s.builds * BUILD_PRICE)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table></div>
+        <p className="note mt-2">Revenue only: hosting, support and sales costs are not subtracted, and grants or sponsorship are left out. The prices are placeholders for illustration, not quotes from any buyer. The first paying customer replaces these guesses with a real number.</p>
+      </section>
+
+      <section>
+        <h2>What is not proven yet</h2>
+        <ul className="small mt-1 list-disc pl-5 flex flex-col gap-1">
+          <li>The live connection to the SPHEREx archive has been tested against a stand-in, not yet against the real service. The dot beside the site name shows the current state.</li>
+          <li>No institution has been asked to pay, so demand and price are untested.</li>
+          <li>The archive’s release names and interfaces can change, and the tool depends on them.</li>
+        </ul>
+      </section>
 
       <section>
         <h2>The data</h2>
@@ -25,7 +151,7 @@ export default function About() {
 
       <section>
         <h2>Finding things that moved</h2>
-        <p className="small mt-1">Each visit is searched for point sources at five times the noise with a standard star-finder, excluding the image border and recording any flagged pixels beneath a detection. A detection with a counterpart in another visit within 9″ is a fixed source. The rest are transients; two transients from different visits are linked when they are at least 9″ apart and the implied rate is below 400″ per day, and the track is extended to further visits by straight-line prediction. Each detection in a track is compared with JPL’s predicted positions for catalogued bodies at that moment; if every visit agrees on one object within 30″, the track is labelled known. Otherwise it is unmatched. A score combines track length and signal-to-noise and is reduced if any pixel was flagged.</p>
+        <p className="small mt-1">Each visit is searched for point sources at five times the noise with a standard star-finder, excluding the image border and recording any flagged pixels beneath a detection. A detection with a counterpart in another visit within 9″ is a fixed source. The rest are transients; two transients from different visits are linked when they are at least 9″ apart and the implied rate is below 400″ per day, and the track is extended to further visits by straight-line prediction. When a field has three or more visits, a track must have at least three detections on one line, because any two unrelated noise peaks can be joined by some line. Each detection in a track is compared with JPL’s predicted positions for catalogued bodies at that moment; if every visit agrees on one object within 30″, the track is labelled known. Otherwise it is unmatched. A score combines track length and signal-to-noise and is reduced if any pixel was flagged.</p>
         <p className="small mt-2">Unmatched is not the same as new. Most unmatched tracks are artefacts, cosmic rays, or small disagreements between our astrometry and the ephemeris. The site says this wherever a track is shown.</p>
       </section>
 
@@ -68,10 +194,15 @@ export default function About() {
 
       <section>
         <h2>How it was built</h2>
-        <p className="small mt-1">The MaVionix team built this for the 2026 NASA Space Apps Challenge. Code and documentation were written with help from an AI assistant (Claude, by Anthropic) and reviewed and tested by the team; the test suite and the method notes are in the repository. The page background is drawn from the Hipparcos and Tycho star catalogues and Milky Way outlines packaged by d3-celestial (BSD-3-Clause, Olaf Frohn). This site is not affiliated with or endorsed by NASA, JPL or Caltech.</p>
+        <p className="small mt-1">Team MaVionix built this for the 2026 NASA Space Apps Challenge, San Diego. The team used an AI assistant to help write and debug the code and documentation, and reviewed and tested the result; the test suite and the method notes are in the repository. The page background is drawn from the Hipparcos and Tycho star catalogues and Milky Way outlines packaged by d3-celestial (BSD-3-Clause, Olaf Frohn). This site is not affiliated with or endorsed by NASA, JPL or Caltech.</p>
       </section>
 
-      <p className="note">Source code, tests and the full methodology are in the project repository. MaVionix, November 2026.</p>
+      <div className="flex items-center gap-3">
+        <img src="/space-apps-san-diego.png" alt="NASA Space Apps San Diego" width={72} height={72} className="event-badge" loading="lazy" />
+        <p className="note">Source code, tests and the full methodology are in the project repository.<br />Team MaVionix, NASA Space Apps Challenge 2026, San Diego. The event logo belongs to NASA Space Apps and is shown to identify the event.</p>
+      </div>
     </article>
+    <Maths />
+    </div>
   );
 }
