@@ -78,7 +78,7 @@ direction (things that move):
 3. **Decode** what they are made of, by turning SPHEREx's changing wavelength into a spectrum.
 4. **Explain** what SPHEREx could and could not see of Planet Nine, with measured numbers.
 
-![Request flow: from a position to a viewer, then to movers, spectrum and Planet Nine](docs/figures/request-flow.png)
+![Request flow: from a position to a viewer, then to movers, spectrum and Planet Nine](docs/screenshots/laptop/request-flow.png)
 
 ---
 
@@ -93,7 +93,7 @@ All captured at 1440×900 in sample mode.
 
 | Viewer: measure a source in every visit | Difference two visits |
 |---|---|
-| ![Measuring one source in every visit](docs/screenshots/viewer-measure.png) | ![Difference image of two visits](docs/screenshots/laptop/03-difference.png) |
+| ![Measuring one source in every visit](docs/screenshots/laptop/viewer-measure.png) | ![Difference image of two visits](docs/screenshots/laptop/03-difference.png) |
 | Click a star to see its brightness, wavelength and SNR in each visit. | Red is brighter in B, blue is brighter in A. A warning appears when the two wavelengths differ. |
 
 | Detected movers on the image | Movers table with JPL match |
@@ -108,12 +108,12 @@ All captured at 1440×900 in sample mode.
 
 | Image as a 3D surface | Phone layout |
 |---|---|
-| ![Image as a 3D surface](docs/screenshots/laptop/09-surface-3d.png) | <img src="docs/screenshots/phone-viewer.png" alt="Viewer on a phone" width="240"> |
+| ![Image as a 3D surface](docs/screenshots/laptop/09-surface-3d.png) | <img src="docs/screenshots/laptop/phone-viewer.png" alt="Viewer on a phone" width="240"> |
 | Brightness becomes height, so faint sources stand out. | Touch to pan, pinch to zoom, tables scroll in their own box. |
 
 **Site map**
 
-![Site map: start page leading to the viewer, movers, spectrum, Planet Nine and how it works](docs/figures/site-map.png)
+![Site map: start page leading to the viewer, movers, spectrum, Planet Nine and how it works](docs/screenshots/laptop/site-map.png)
 
 ---
 
@@ -252,7 +252,7 @@ equivalents.
 
 ## Architecture
 
-![COSMOS architecture](docs/figures/architecture.png)
+![COSMOS architecture](docs/screenshots/laptop/architecture.png)
 
 ```
 frontend/   Next.js 16, React 19, TypeScript, Tailwind 4, Recharts, three.js
@@ -427,7 +427,7 @@ each detector. Two visits to the same sky position therefore usually sample *dif
 wavelengths. COSMOS treats this as a feature (spectra, section 6) and as a trap (differencing,
 section 4).
 
-![SPHEREx detector bands D1 to D6](docs/figures/spherex-bands.png)
+![SPHEREx detector bands D1 to D6](docs/screenshots/laptop/spherex-bands.png)
 
 | Detector | Band (µm) | Resolving power R |
 |---|---|---|
@@ -471,7 +471,7 @@ y = \frac{\operatorname{asinh}(x/a)}{\operatorname{asinh}(1/a)}, \quad a = 0.1
 Images are upscaled 4× with nearest-neighbour only, so individual SPHEREx pixels stay visible and
 no interpolation can invent structure.
 
-![asinh stretch and the five spectral templates](docs/figures/stretch-and-templates.png)
+![asinh stretch and the five spectral templates](docs/screenshots/laptop/stretch-and-templates.png)
 
 ### 4. Wavelength-aware difference imaging
 
@@ -494,14 +494,14 @@ D = \frac{I_B - I_A}{\sqrt{\sigma_A^2 + \sigma_B^2}}
 
    the API returns a warning and the UI lists only the "clean" same-band pairs.
 
-![Why differencing across different wavelengths leaves residuals on every star](docs/figures/wavelength-mismatch.png)
+![Why differencing across different wavelengths leaves residuals on every star](docs/screenshots/laptop/wavelength-mismatch.png)
 
 Without this check every star shows up in the difference image, because it is a different
 brightness at each wavelength. The figure above is a toy illustration, not SPHEREx data.
 
 ### 5. Moving-object detection
 
-![Moving-object pipeline](docs/figures/mover-pipeline.png)
+![Moving-object pipeline](docs/screenshots/laptop/mover-pipeline.png)
 
 | Step | Rule | Why |
 |---|---|---|
@@ -512,7 +512,7 @@ brightness at each wavelength. The figure above is a toy illustration, not SPHER
 | Score | See below | Simple, monotonic, shown beside the reasons. |
 | Identify | JPL SBIdent, **30″** tolerance, all visits must agree on one name, then `known` | Geocentric observer: SPHEREx's 650 km orbit gives under 1″ of parallax beyond 1 AU. |
 
-![Linking detections into a track](docs/figures/linking-geometry.png)
+![Linking detections into a track](docs/screenshots/laptop/linking-geometry.png)
 
 **Motion rate** of a track with total separation $`s`$ (arcsec) over $`\Delta t`$ (days):
 
@@ -540,7 +540,7 @@ and total motion $`\theta = \dot\theta\,\Delta t`$, then
 d \approx \frac{206265''\cdot b}{\theta}\ \ \mathrm{AU}
 ```
 
-![Earth's baseline and the implied distance](docs/figures/parallax-distance.png)
+![Earth's baseline and the implied distance](docs/screenshots/laptop/parallax-distance.png)
 
 Real bodies also move on their own orbits, so this is an **order-of-magnitude indicator** and is
 shown with that caveat.
@@ -611,7 +611,7 @@ At least 3 positive-flux points with wavelengths are required. The result is lab
 
 ### 7. Could SPHEREx see Planet Nine?
 
-![Planet Nine brightness against distance and SPHEREx depth](docs/figures/planet-nine-brightness.png)
+![Planet Nine brightness against distance and SPHEREx depth](docs/screenshots/laptop/planet-nine-brightness.png)
 
 **Size.** When no radius is given, a simple mass-radius power law is used:
 
@@ -729,7 +729,7 @@ z_{\rm eq} = y\sin\varepsilon + z\cos\varepsilon
 \alpha = \operatorname{atan2}(y_{\rm eq},\,x), \qquad \delta = \operatorname{asin}\!\left(\frac{z_{\rm eq}}{r}\right)
 ```
 
-![Top-down view of the giant planets and the Planet Nine reference orbit on 2026-11-16](docs/figures/outer-solar-system.png)
+![Top-down view of the giant planets and the Planet Nine reference orbit on 2026-11-16](docs/screenshots/laptop/outer-solar-system.png)
 
 The figure above is computed with exactly these formulas and the elements bundled in
 `frontend/src/lib/orbits.ts`, for 2026-11-16. The dashed orbit is a *hypothesis*: the
