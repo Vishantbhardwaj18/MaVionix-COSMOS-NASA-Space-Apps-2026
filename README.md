@@ -875,8 +875,8 @@ identify the event; no other NASA marks are used.
 
 ## Use of AI tools
 
-The team used an AI assistant to help debug the code, and reviewed and
-tested the result. No images, audio or video in the application are AI-help taken for the backgrounds
+The team used an AI assistant to help debug the code only and complete project is reviewed and
+tested the result by mavionix. No images, audio or video in the application are AI generated. AI-help taken for the backgrounds
 and 3D views(frontend) are drawn in the browser from catalogue data, and the offline sample field is produced
 by a documented algorithm in `backend/app/data/synthetic.py`.
 
